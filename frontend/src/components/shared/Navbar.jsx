@@ -1,19 +1,20 @@
 import { Link } from "react-router-dom"
+import userPhoto from "../../assets/img/user.jpg"
 
 const Navbar = () => {
 
   const navlinks = [
     <>
-      <li><Link to={"/"}>Home</Link></li>
-      <li><Link to={"/"}>Missing</Link></li>
-      <li><Link to={"/"}>About Us</Link></li>
-      <li><Link to={"/"}>Contact Us</Link></li>
+      <li><Link className="font-medium after:text-" to={"/"}>Home</Link></li>
+      <li><Link className="font-medium after:text-" to={"/"}>Missing</Link></li>
+      <li><Link className="font-medium after:text-" to={"/"}>About Us</Link></li>
+      <li><Link className="font-medium after:text-" to={"/"}>Contact Us</Link></li>
     </>
   ]
 
   return (
     <div>
-      <div className="navbar bg-base-100">
+      <div className="navbar bg-[#48A1EC] text-black lg:text-[#fff]">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -36,7 +37,7 @@ const Navbar = () => {
               {navlinks}
             </ul>
           </div>
-          <a className="btn btn-ghost text-xl">ManusherKhoj</a>
+          <a className="btn btn-ghost text-xl font-semibold text-[#fff]">ManusherKhoj</a>
         </div>
         <div className="navbar-center hidden lg:flex">
           <ul className="menu menu-horizontal px-1">
@@ -44,7 +45,8 @@ const Navbar = () => {
           </ul>
         </div>
         <div className="navbar-end">
-          <a className="btn">Button</a>
+          <img className="rounded-full w-10 h-10 mr-3" src={userPhoto} alt="" />
+          <a className="btn btn-sm bg-white text-[#48A1EC]  font-medium">Login</a>
         </div>
       </div>
     </div>

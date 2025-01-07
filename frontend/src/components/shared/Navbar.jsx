@@ -1,18 +1,26 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import userPhoto from "../../assets/img/user.jpg";
+import { signOut } from "firebase/auth";
 import { HiBars3 } from "react-icons/hi2";
+import { useAuthState } from "react-firebase-hooks/auth";
+import auth from "../../firebase/firebase.config";
+import userPhoto from "../../assets/img/user.jpg";
+import toast from "react-hot-toast";
+import { IoIosLogOut } from "react-icons/io";
+import { MdOutlinePersonOutline } from "react-icons/md";
+
 
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [prevScrollY, setPrevScrollY] = useState(0);
+  const [user] = useAuthState(auth);
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       if (currentScrollY > prevScrollY && currentScrollY > 50) {
-        setIsVisible(false); 
+        setIsVisible(false);
       } else {
         setIsVisible(true);
       }
@@ -25,6 +33,16 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [prevScrollY]);
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        toast.success("User logged out");
+      })
+      .catch((error) => {
+        toast.error("Error logging out:", error);
+      });
+  };
 
   const navlinks = (
     <>
@@ -45,16 +63,15 @@ const Navbar = () => {
 
   return (
     <div
-      className={`fixed top-0 left-0 w-full transition-transform duration-300 ${
+      className={`fixed top-0 z-50 left-0 w-full transition-transform duration-300 ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="navbar bg-[#48A1EC]">
+      <div className="navbar bg-[#48A1EC] px-2 md:px-5 lg:px-10">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
-             <HiBars3 className="text-2xl text-white"/>
-              
+              <HiBars3 className="text-2xl text-white" />
             </div>
             <ul
               tabIndex={0}
@@ -66,16 +83,50 @@ const Navbar = () => {
           <a className="text-xl font-semibold text-[#fff]">ManusherKhoj</a>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 text-[#48A1EC] lg:text-[#fff]">{navlinks}</ul>
+          <ul className="menu menu-horizontal px-1 text-[#48A1EC] lg:text-[#fff]">
+            {navlinks}
+          </ul>
         </div>
         <div className="navbar-end">
-          <img className="rounded-full w-10 h-10 mr-3" src={userPhoto} alt="" />
-          <Link
-            to={"/login"}
-            className="btn btn-sm bg-white text-[#48A1EC] font-medium"
-          >
-            Login
-          </Link>
+          {user ? (
+            <div className="dropdown dropdown-end">
+              <label
+                tabIndex={0}
+                className="btn btn-ghost btn-circle avatar"
+                role="button"
+              >
+                <div className="w-10 rounded-full">
+                  <img
+                    src={user.photoURL || userPhoto}
+                    alt="User"
+                    className="rounded-full"
+                  />
+                </div>
+              </label>
+              <ul
+                tabIndex={0}
+                className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
+              >
+                <li>
+                  <Link to="/profile" className="font-medium">
+                    <MdOutlinePersonOutline/> Profile
+                  </Link>
+                </li>
+                <li>
+                  <button onClick={handleLogout} className="font-medium text-red-500">
+                   <IoIosLogOut/> Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          ) : (
+            <Link
+              to={"/login"}
+              className="btn btn-sm bg-white text-[#48A1EC] font-medium"
+            >
+              Login
+            </Link>
+          )}
         </div>
       </div>
     </div>

@@ -10,7 +10,12 @@
 
 @layer components {
   .btn-color {
-    background-color: bisque;
-
+    background-color: #48A1EC;
+  }
+  .blue-bg{
+    background-color: #48A1EC;
+  }
+  .blue-text{
+    color: #48A1EC;
   }
 }

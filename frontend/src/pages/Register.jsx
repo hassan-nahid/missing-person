@@ -1,12 +1,16 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { useAuthState, useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { sendEmailVerification, updateProfile } from "firebase/auth";
 import auth from "../firebase/firebase.config";
 import toast from "react-hot-toast";
+import LoginWithGoogle from "../components/Auth/LoginWithGoogle";
+import { useEffect } from "react";
 
 const Register = () => {
   const [createUserWithEmailAndPassword, , loading, error] =
     useCreateUserWithEmailAndPassword(auth);
+  const [user] = useAuthState(auth);
+
 
   const navigate = useNavigate();
 
@@ -54,8 +58,14 @@ const Register = () => {
     }
   };
 
+  useEffect(() => {
+    if (user) {
+      navigate("/login");
+    }
+  }, [user,navigate]);
+
   return (
-    <div>
+    <div className="mt-16">
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse w-full">
           <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
@@ -111,7 +121,7 @@ const Register = () => {
               <label className="label">
                 <Link
                   to={"/login"}
-                  className="label-text-alt link link-hover text-[#48A1EC]"
+                  className="label-text-alt link link-hover blue-text"
                 >
                   Already Have Account? <span>Login</span>
                 </Link>
@@ -119,7 +129,7 @@ const Register = () => {
               <div className="form-control mt-6">
                 <button
                   type="submit"
-                  className="btn btn-color hover:btn-color text-white"
+                  className="btn blue-bg hover:blue-bg text-white"
                   disabled={loading}
                 >
                   {loading ? "Registering..." : "Register"}
@@ -131,6 +141,7 @@ const Register = () => {
                 </p>
               )}
             </form>
+            <LoginWithGoogle/>
           </div>
         </div>
       </div>

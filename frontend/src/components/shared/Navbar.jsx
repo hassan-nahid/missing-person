@@ -50,13 +50,16 @@ const Navbar = () => {
         <Link className="font-medium" to={"/"}>Home</Link>
       </li>
       <li>
-        <Link className="font-medium" to={"/"}>Missing</Link>
+        <Link className="font-medium" to={"/missing"}>Missing</Link>
       </li>
       <li>
-        <Link className="font-medium" to={"/"}>About Us</Link>
+        <Link className="font-medium" to={"/found"}>Found</Link>
       </li>
       <li>
-        <Link className="font-medium" to={"/"}>Contact Us</Link>
+        <Link className="font-medium" to={"/about_us"}>About Us</Link>
+      </li>
+      <li>
+        <Link className="font-medium" to={"/about_us"}>Contact Us</Link>
       </li>
     </>
   );
@@ -67,7 +70,7 @@ const Navbar = () => {
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="navbar bg-[#48A1EC] px-2 md:px-5 lg:px-10">
+      <div className="navbar blue-bg px-2 md:px-5 lg:px-10">
         <div className="navbar-start">
           <div className="dropdown">
             <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -75,15 +78,15 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="text-[#48A1EC] lg:text-[#fff] menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+              className="blue-text lg:text-[#fff] menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
             >
               {navlinks}
             </ul>
           </div>
-          <a className="text-xl font-semibold text-[#fff]">ManusherKhoj</a>
+          <Link to={"/"} className="text-xl font-semibold cursor-pointer text-[#fff]">ManusherKhoj</Link>
         </div>
         <div className="navbar-center hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 text-[#48A1EC] lg:text-[#fff]">
+          <ul className="menu menu-horizontal px-1 blue-text lg:text-[#fff]">
             {navlinks}
           </ul>
         </div>
@@ -97,8 +100,9 @@ const Navbar = () => {
               >
                 <div className="w-10 rounded-full">
                   <img
-                    src={user.photoURL || userPhoto}
+                    src={userPhoto}
                     alt="User"
+                    title={user?.displayName}
                     className="rounded-full"
                   />
                 </div>
@@ -122,7 +126,7 @@ const Navbar = () => {
           ) : (
             <Link
               to={"/login"}
-              className="btn btn-sm bg-white text-[#48A1EC] font-medium"
+              className="btn btn-sm bg-white blue-text font-medium"
             >
               Login
             </Link>

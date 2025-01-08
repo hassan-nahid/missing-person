@@ -3,6 +3,7 @@ import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
 import auth from "../firebase/firebase.config";
 import toast from "react-hot-toast";
 import { useEffect } from "react";
+import LoginWithGoogle from "../components/Auth/LoginWithGoogle";
 
 const Login = () => {
   const [signInWithEmailAndPassword, user, , error] = useSignInWithEmailAndPassword(auth); 
@@ -74,14 +75,14 @@ const Login = () => {
                 <label className="label">
                   <Link
                     to={"/register"}
-                    className="label-text-alt link link-hover text-[#48A1EC]"
+                    className="label-text-alt link link-hover blue-text"
                   >
                     Don&apos;t Have Account? <span>Register</span>
                   </Link>
                 </label>
               </div>
               <div className="form-control mt-6">
-                <button className="btn btn-color hover:btn-color text-white">
+                <button className="btn blue-bg hover:blue-bg text-white">
                   Login
                 </button>
               </div>
@@ -91,6 +92,7 @@ const Login = () => {
                 {error.message}
               </p>
             )}
+             <LoginWithGoogle />
           </div>
         </div>
       </div>

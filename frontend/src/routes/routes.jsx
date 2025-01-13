@@ -5,11 +5,15 @@ import Home from "../pages/Home";
 import MainLayout from "../layouts/MainLayout";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import Profile from "../pages/Profile";
+import CompleteProfile from "../pages/CompleteProfile";
+import ErrorPage from "../pages/ErrorPage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -17,6 +21,14 @@ export const router = createBrowserRouter([
       },
       {
         path: "/about",
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+      {
+        path: "/complete_profile",
+        element: <CompleteProfile />,
       },
       {
         path: "/login",

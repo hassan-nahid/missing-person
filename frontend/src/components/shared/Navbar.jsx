@@ -7,7 +7,9 @@ import auth from "../../firebase/firebase.config";
 import userPhoto from "../../assets/img/user.jpg";
 import toast from "react-hot-toast";
 import { IoIosLogOut } from "react-icons/io";
-import { MdOutlinePersonOutline } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
+import { FaUserEdit } from "react-icons/fa";
+
 
 
 
@@ -113,7 +115,12 @@ const Navbar = () => {
               >
                 <li>
                   <Link to="/profile" className="font-medium">
-                    <MdOutlinePersonOutline/> Profile
+                    <FaUser/> Profile
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/complete_profile" className="font-medium">
+                   <FaUserEdit/> Complete Profile
                   </Link>
                 </li>
                 <li>

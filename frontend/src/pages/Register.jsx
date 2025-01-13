@@ -65,7 +65,7 @@ const Register = () => {
   }, [user,navigate]);
 
   return (
-    <div className="mt-16">
+    <div className="">
       <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse w-full">
           <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">

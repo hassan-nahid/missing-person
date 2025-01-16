@@ -8,6 +8,9 @@ import Register from "../pages/Register";
 import Profile from "../pages/Profile";
 import CompleteProfile from "../pages/CompleteProfile";
 import ErrorPage from "../pages/ErrorPage";
+import Missing from "../pages/Missing";
+import Found from "../pages/Found";
+import MissingPost from "../components/Missing/MissingPost";
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +21,18 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/missing",
+        element: <Missing />,
+      },
+      {
+        path: "/missing_post",
+        element: <MissingPost />,
+      },
+      {
+        path: "/found",
+        element: <Found />,
       },
       {
         path: "/about",

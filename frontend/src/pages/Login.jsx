@@ -6,22 +6,49 @@ import { useEffect } from "react";
 import LoginWithGoogle from "../components/Auth/LoginWithGoogle";
 
 const Login = () => {
-  const [signInWithEmailAndPassword, user, , error] = useSignInWithEmailAndPassword(auth); 
+  const [signInWithEmailAndPassword, , , error] = useSignInWithEmailAndPassword(auth);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     const form = e.target;
-    const email = form.email.value;
+    const email = form.email.value.trim();
     const password = form.password.value;
 
     try {
-      await signInWithEmailAndPassword(email, password);
+      // Sign in with Firebase
+      const userCredential = await signInWithEmailAndPassword(email, password);
+
+      if (userCredential) {
+        // Extract user information
+        const { email, displayName } = userCredential.user;
+
+        // Send user info (email and name) to backend for JWT
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/user/user`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            name: displayName || "Unknown User", // Fallback if displayName is null
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          toast.success("Login successful!");
+          localStorage.setItem("token", data.token); // Store the token securely
+          navigate("/");
+        } else {
+          toast.error(data.message || "Failed to log in on the server!");
+        }
+      }
     } catch (err) {
       toast.error(err.message || "Login failed!");
     }
   };
-  console.log(user)
 
   useEffect(() => {
     // Check if user is logged in and email is verified
@@ -29,19 +56,18 @@ const Login = () => {
       if (user) {
         if (user.emailVerified) {
           toast.success("Login successful!");
-          navigate("/"); 
+          navigate("/");
         } else {
           toast.error("Please verify your email before logging in.");
-          auth.signOut(); 
+          auth.signOut();
         }
       }
     });
 
     return () => {
-      unsubscribe(); 
+      unsubscribe();
     };
   }, [navigate]);
-  
 
   return (
     <div>
@@ -92,7 +118,7 @@ const Login = () => {
                 {error.message}
               </p>
             )}
-             <LoginWithGoogle />
+            <LoginWithGoogle />
           </div>
         </div>
       </div>

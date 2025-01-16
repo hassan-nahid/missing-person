@@ -9,14 +9,16 @@ import toast from "react-hot-toast";
 import { IoIosLogOut } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
 import { FaUserEdit } from "react-icons/fa";
-
-
+import { useUser } from "../../context/userContext";
 
 
 const Navbar = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [prevScrollY, setPrevScrollY] = useState(0);
   const [user] = useAuthState(auth);
+
+  const {userData} = useUser();
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +46,7 @@ const Navbar = () => {
       .catch((error) => {
         toast.error("Error logging out:", error);
       });
+    localStorage.removeItem("token");
   };
 
   const navlinks = (
@@ -118,11 +121,20 @@ const Navbar = () => {
                     <FaUser/> Profile
                   </Link>
                 </li>
-                <li>
-                  <Link to="/complete_profile" className="font-medium">
-                   <FaUserEdit/> Complete Profile
-                  </Link>
-                </li>
+                {userData?.isProfileComplete ? (
+                  <>
+                    {/* <Link to="/edit_profile" className="font-medium">
+                      <FaUserEdit/> Edit Profile
+                    </Link> */}
+                  </>
+                ) : (
+                  <li>
+                    <Link to="/complete_profile" className="font-medium">
+                      <FaUserEdit/> Complete Profile
+                    </Link>
+                  </li>
+                )}
+                <hr />
                 <li>
                   <button onClick={handleLogout} className="font-medium text-red-500">
                    <IoIosLogOut/> Logout

@@ -1,11 +1,12 @@
 // userRoutes.js
 import express from "express";
-import { completeProfile, deleteUser, getUser, registerOrLoginWithGoogle, updateUser } from "../controllers/userController.js";
+import { completeProfile, deleteUser, getUserByEmail, registerOrLoginWithGoogle, updateUser } from "../controllers/userController.js";
 
 const router = express.Router();
 
-// Get user by ID
-router.get("/:id", getUser);
+// Get user by email
+router.get("/:email", getUserByEmail);
+
 
 // Create a new user
 router.post("/user", registerOrLoginWithGoogle);

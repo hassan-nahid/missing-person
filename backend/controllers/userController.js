@@ -7,18 +7,20 @@ import jwt from "jsonwebtoken";
 const SECRET_KEY = process.env.JWT_SECRET; 
 
 
-// Get a user by ID
-export const getUser = async (req, res) => {
+// Get a user by email
+export const getUserByEmail = async (req, res) => {
     try {
-        const user = await User.findById(req.params.id);
+        const user = await User.findOne({ email: req.params.email }); // Find by email
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
         res.status(200).json(user);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
+
+
 
 
 // Create a new user or login existing user
@@ -39,7 +41,7 @@ export const registerOrLoginWithGoogle = async (req, res) => {
 
         // Generate JWT token
         const token = jwt.sign(
-            { id: user._id, email: user.email }, // Payload
+            { email: user.email }, // Payload
             SECRET_KEY, // Secret key
             { expiresIn: "7d" } // Token expiration time
         );

@@ -1,7 +1,12 @@
 import userPhoto from '../assets/img/user.jpg';
 import postPhoto from '../assets/img/userPhoto.jpg';
+import { useUser } from '../context/userContext';
 
 const Profile = () => {
+
+  const {userData} = useUser();
+  console.log(userData)
+
   return (
     <div className="min-h-screen bg-gray-100 py-10">
       <div className="container mx-auto px-4">
@@ -10,13 +15,13 @@ const Profile = () => {
           <div className="flex flex-col md:flex-row items-center">
             <div className="avatar">
               <div className="w-24 rounded-full ring ring-blue-bg ring-offset-base-100 ring-offset-2">
-                <img src={userPhoto} alt="user photo" />
+                <img src={userData?.userPhoto ? userData?.userPhoto : userPhoto} alt="user photo" />
               </div>
             </div>
             <div className="mt-4 md:mt-0 md:ml-6 text-center md:text-left">
-              <h2 className="text-2xl font-semibold text-gray-800">John Doe</h2>
-              <p className="text-gray-500">Email: johndoe@example.com</p>
-              <p className="text-gray-500">Contact: +880-1234567890</p>
+              <h2 className="text-2xl font-semibold text-gray-800">{userData?.name}</h2>
+              <p className="text-gray-500">Email: {userData?.email}</p>
+              <p className="text-gray-500">Contact: {userData?.phone}</p>
             </div>
           </div>
         </div>

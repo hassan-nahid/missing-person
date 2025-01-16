@@ -1,7 +1,11 @@
 import { useState } from "react";
+import { useAuthState } from "react-firebase-hooks/auth";
+import auth from "../firebase/firebase.config"; // Your Firebase config
+import axios from "axios";
 
 const CompleteProfile = () => {
   const [formData, setFormData] = useState({
+    email: "",
     phone: "",
     address: {
       division: "",
@@ -14,6 +18,21 @@ const CompleteProfile = () => {
     documentPhoto: null,
     userPhoto: null,
   });
+
+  const [user] = useAuthState(auth); // Get user data from Firebase
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Set the user's email from Firebase when the user is authenticated
+  useState(() => {
+    if (user) {
+      setFormData((prevData) => ({
+        ...prevData,
+        email: user.email,
+        name: user.displayName // Set the email from Firebase
+      }));
+    }
+  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -36,10 +55,73 @@ const CompleteProfile = () => {
     setFormData({ ...formData, [name]: files[0] });
   };
 
-  const handleSubmit = (e) => {
+  // Function to upload image to Cloudinary
+  const uploadImageToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "missing-person"); // Replace with your upload preset
+    formData.append("cloud_name", "dyaofxcyl"); // Replace with your cloud name
+
+    try {
+      const response = await axios.post("https://api.cloudinary.com/v1_1/dyaofxcyl/image/upload", formData);
+      return response.data.secure_url; // URL of the uploaded image
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      throw new Error("Failed to upload image");
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    // Handle form submission logic here
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Upload images first
+      const documentPhotoURL = formData.documentPhoto
+        ? await uploadImageToCloudinary(formData.documentPhoto)
+        : "";
+      const userPhotoURL = formData.userPhoto
+        ? await uploadImageToCloudinary(formData.userPhoto)
+        : "";
+
+      // Prepare data to be sent to the backend
+      const profileData = {
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        identificationType: formData.identificationType,
+        identificationNumber: formData.identificationNumber,
+        documentPhoto: documentPhotoURL,
+        userPhoto: userPhotoURL,
+      };
+
+      // Send the data to your backend
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/complete-profile`, // Replace with your API URL
+        {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${user?.accessToken}`, // If you are using JWT for authentication
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(profileData), // Sending the profile data as JSON
+        }
+      );
+
+      // Handle response
+      if (!response.ok) {
+        throw new Error("Failed to update profile. Please try again.");
+      }
+      const data = await response.json();
+      console.log(data);
+      setLoading(false);
+      // Optionally, redirect user or show success message
+    } catch (error) {
+      setLoading(false);
+      setError(error.message);
+      console.error(error);
+    }
   };
 
   return (
@@ -48,7 +130,41 @@ const CompleteProfile = () => {
         onSubmit={handleSubmit}
         className="bg-white p-6 rounded shadow-lg w-full max-w-lg"
       >
-        <h2 className="text-2xl font-bold mb-6 blue-text">Complete Your Profile</h2>
+        <h2 className="text-2xl font-bold mb-6">Complete Your Profile</h2>
+
+        {/* Name */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1" htmlFor="name">
+            Name
+          </label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            className="input input-bordered w-full"
+            value={formData.name}
+            onChange={handleInputChange}
+            required
+            disabled
+          />
+        </div>
+
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium mb-1" htmlFor="email">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            className="input input-bordered w-full"
+            value={formData.email}
+            onChange={handleInputChange}
+            required
+            disabled // Disable email input field since the email is taken from Firebase
+          />
+        </div>
 
         {/* Phone Number */}
         <div className="mb-4">
@@ -67,7 +183,6 @@ const CompleteProfile = () => {
         </div>
 
         {/* Address Fields */}
-        <h3 className="text-lg font-semibold mt-6 mb-2">Address Details</h3>
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">Division</label>
           <input
@@ -112,10 +227,7 @@ const CompleteProfile = () => {
           />
         </div>
 
-        {/* Identification Details */}
-        <h3 className="text-lg font-semibold mt-6 mb-2">
-          Identification Details
-        </h3>
+        {/* Identification Fields */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
             Identification Type
@@ -148,6 +260,7 @@ const CompleteProfile = () => {
           />
         </div>
 
+        {/* Document Photo */}
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
             Upload Document Photo
@@ -162,7 +275,6 @@ const CompleteProfile = () => {
         </div>
 
         {/* User Photo */}
-        <h3 className="text-lg font-semibold mt-6 mb-2">User Photo</h3>
         <div className="mb-4">
           <label className="block text-sm font-medium mb-1">
             Upload Your Photo
@@ -178,8 +290,10 @@ const CompleteProfile = () => {
 
         {/* Submit Button */}
         <button type="submit" className="btn blue-bg hover:blue-bg text-white w-full">
-          Submit
+          {loading ? "Submitting..." : "Submit"}
         </button>
+
+        {error && <div className="text-red-500 mt-4">{error}</div>}
       </form>
     </div>
   );

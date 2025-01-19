@@ -1,39 +1,57 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
+import axios from "axios";
 import auth from "../firebase/firebase.config"; // Your Firebase config
 
-// Create a context for the user
 const UserContext = createContext();
 
-// UserProvider component to wrap around your app
 // eslint-disable-next-line react/prop-types
 export const UserProvider = ({ children }) => {
-    const [currentUser, loading, error] = useAuthState(auth); // Get the current user from Firebase
+    const [currentUser, loading, error] = useAuthState(auth); 
     const [userData, setUserData] = useState(null);
+    const [isLoading, setIsLoading] = useState(true); 
+    const [token] = useState(localStorage.getItem("token"));
 
-    useEffect(() => {
+    // Function to fetch user data
+    const fetchUserData = async () => {
         if (currentUser) {
-            // Optionally, fetch additional user data from the backend if needed
-            const fetchUserData = async () => {
-                try {
-                    const encodedEmail = encodeURIComponent(currentUser.email);
-                    const response = await fetch(
-                        `${import.meta.env.VITE_API_URL}/api/user/${encodedEmail}`
-                    );
-                    const data = await response.json();
-                    setUserData(data); // Store user data in the state
-                } catch (err) {
-                    console.error("Error fetching user data", err);
-                }
-            };
-            fetchUserData();
+            try {
+                const encodedEmail = encodeURIComponent(currentUser.email);
+                const response = await axios.get(
+                    `${import.meta.env.VITE_API_URL}/api/user/single/${encodedEmail}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`, // Include token in the Authorization header
+                        },
+                    }
+                );
+
+                setUserData(response.data); // Store user data in the state
+            } catch (err) {
+                console.error("Error fetching user data", err.response ? err.response.data : err.message);
+            } finally {
+                setIsLoading(false); // Stop loading regardless of success or failure
+            }
         } else {
-            setUserData(null); // Clear user data when user logs out
+            setUserData(null); // No user logged in
+            setIsLoading(false);
         }
-    }, [currentUser]);
+    };
+
+    // Initial fetch when user changes
+    useEffect(() => {
+        fetchUserData();
+    }, [currentUser, token]);
+
+    // Refetch when isProfileComplete changes
+    useEffect(() => {
+        if (userData?.isProfileComplete) {
+            fetchUserData();
+        }
+    }, [userData?.isProfileComplete]);
 
     return (
-        <UserContext.Provider value={{ currentUser, userData, loading, error }}>
+        <UserContext.Provider value={{ currentUser, userData, loading, error, isLoading, refreshUserData: fetchUserData }}>
             {children}
         </UserContext.Provider>
     );

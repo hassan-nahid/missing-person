@@ -10,18 +10,20 @@ const SECRET_KEY = process.env.JWT_SECRET;
 // Get a user by email
 export const getUserByEmail = async (req, res) => {
     try {
-        const user = await User.findOne({ email: req.params.email }); // Find by email
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        res.status(200).json(user);
+      // Find user by email and exclude identification data
+      const user = await User.findOne({ email: req.params.email })
+        .select("-identificationType -identificationNumber -documentPhoto"); // Exclude these fields
+  
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.status(200).json(user); // Return the user data
     } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
+      res.status(500).json({ message: "Server error", error: error.message });
     }
-};
-
-
-
+  };
+  
 
 // Create a new user or login existing user
 export const registerOrLoginWithGoogle = async (req, res) => {

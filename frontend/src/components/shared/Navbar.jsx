@@ -17,7 +17,8 @@ const Navbar = () => {
   const [prevScrollY, setPrevScrollY] = useState(0);
   const [user] = useAuthState(auth);
 
-  const {userData} = useUser();
+  const { userData } = useUser();
+
 
 
   useEffect(() => {

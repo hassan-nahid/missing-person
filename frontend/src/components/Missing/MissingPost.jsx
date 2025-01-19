@@ -1,21 +1,28 @@
 import { useState } from "react";
+import { useUser } from "../../context/userContext";
+import axios from "axios";
+import toast from "react-hot-toast";
+
 
 const MissingPost = () => {
+  const { userData } = useUser();
+
   const [formData, setFormData] = useState({
     name: "",
     age: "",
+    gender: "",
     careOf: "",
-    address: "",
     lastSeen: "",
     clothes: "",
     skinColor: "",
     height: "",
-    appearance: "",
     education: "",
-    documents: null,
+    seriousIllnessOrDisabled: "",
     photo: null,
     description: "",
   });
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -25,44 +32,98 @@ const MissingPost = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  // Upload image to Cloudinary
+  const uploadImageToCloudinary = async (file) => {
+    const cloudinaryData = new FormData();
+    cloudinaryData.append("file", file);
+    cloudinaryData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET); // Replace with your upload preset
+    cloudinaryData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME); // Replace with your Cloudinary cloud name
+
+    try {
+      const response = await axios.post(
+        `https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        cloudinaryData
+      );
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Error uploading image to Cloudinary:", error);
+      throw new Error("Failed to upload image");
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data Submitted:", formData);
-    // Add your form submission logic (e.g., API call)
-    setFormData({
-      name: "",
-      age: "",
-      careOf: "",
-      address: "",
-      lastSeen: "",
-      clothes: "",
-      skinColor: "",
-      height: "",
-      appearance: "",
-      education: "",
-      documents: null,
-      photo: null,
-      description: "",
-    });
+    setLoading(true);
+
+    try {
+      let photoURL = "";
+
+      // Upload photo to Cloudinary if provided
+      if (formData.photo) {
+        photoURL = await uploadImageToCloudinary(formData.photo);
+      }
+
+      // Prepare data for the API request
+      const postData = {
+        ...formData,
+        photo: photoURL,
+        email: userData.email, // Include user's email
+      };
+
+      // Send data to the backend
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/missing`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(postData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success("Post submitted successfully!");
+        setFormData({
+          name: "",
+          age: "",
+          gender: "",
+          careOf: "",
+          lastSeen: "",
+          clothes: "",
+          skinColor: "",
+          height: "",
+          education: "",
+          seriousIllnessOrDisabled: "",
+          photo: null,
+          description: "",
+        });
+      } else {
+        toast.error(`Error: ${result.message}`);
+      }
+    } catch (error) {
+      toast.error(`Error: ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen">
       <div className="container mx-auto py-8">
-        {/* Page Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-blue-600">Post Missing Person</h1>
+          <h1 className="text-2xl font-bold blue-text">Post Missing Person</h1>
           <p className="text-lg text-gray-600 mt-2">
             Fill out the details below to post information about a missing person.
           </p>
         </div>
 
-        {/* Form */}
-        <div className="bg-white shadow-lg rounded-lg p-8 max-w-4xl mx-auto">
+        <div className="bg-gray-50 shadow-lg rounded-lg p-8 max-w-4xl mx-auto">
+      
+
           <form onSubmit={handleSubmit}>
-            {/* Form Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-2">
+            <input
                 type="text"
                 name="name"
                 value={formData.name}
@@ -78,20 +139,23 @@ const MissingPost = () => {
                 placeholder="Age"
                 className="input input-bordered w-full"
               />
+              <select
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="select select-bordered w-full"
+              >
+                <option value="">Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
               <input
                 type="text"
                 name="careOf"
                 value={formData.careOf}
                 onChange={handleChange}
                 placeholder="Care of (Father/Mother Name)"
-                className="input input-bordered w-full"
-              />
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleChange}
-                placeholder="Address or Street"
                 className="input input-bordered w-full"
               />
               <input
@@ -128,29 +192,20 @@ const MissingPost = () => {
               />
               <input
                 type="text"
-                name="appearance"
-                value={formData.appearance}
-                onChange={handleChange}
-                placeholder="Distinct Features (e.g., scars)"
-                className="input input-bordered w-full"
-              />
-              <input
-                type="text"
                 name="education"
                 value={formData.education}
                 onChange={handleChange}
                 placeholder="Educational or Professional Record"
                 className="input input-bordered w-full"
               />
-              <div>
-                <label className="block text-sm mb-2">Documents</label>
-                <input
-                  type="file"
-                  name="documents"
-                  onChange={handleChange}
-                  className="file-input w-full"
-                />
-              </div>
+              <input
+                type="text"
+                name="seriousIllnessOrDisabled"
+                value={formData.seriousIllnessOrDisabled}
+                onChange={handleChange}
+                placeholder="Serious Illness or Disability"
+                className="input input-bordered w-full"
+              />
               <div>
                 <label className="block text-sm mb-2">Photo</label>
                 <input
@@ -169,11 +224,14 @@ const MissingPost = () => {
               className="textarea textarea-bordered w-full mt-4"
               rows="4"
             ></textarea>
-            <div className="flex justify-end mt-4">
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </div>
+
+            <button
+              type="submit"
+              className="btn blue-bg hover:blue-bg text-white w-full mt-4"
+              disabled={loading}
+            >
+              {loading ? "Submitting..." : "Submit"}
+            </button>
           </form>
         </div>
       </div>

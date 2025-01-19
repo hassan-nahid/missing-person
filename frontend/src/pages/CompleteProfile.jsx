@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import auth from "../firebase/firebase.config"; // Your Firebase config
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/userContext";
 
 const CompleteProfile = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +24,8 @@ const CompleteProfile = () => {
   const [user] = useAuthState(auth); // Get user data from Firebase
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); 
+  const {refreshUserData} = useUser(); // Custom hook to refetch user data
 
   // Set the user's email from Firebase when the user is authenticated
   useState(() => {
@@ -59,11 +63,11 @@ const CompleteProfile = () => {
   const uploadImageToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
-    formData.append("upload_preset", "missing-person"); // Replace with your upload preset
-    formData.append("cloud_name", "dyaofxcyl"); // Replace with your cloud name
+    formData.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET); // Replace with your upload preset
+    formData.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME); // Replace with your cloud name
 
     try {
-      const response = await axios.post("https://api.cloudinary.com/v1_1/dyaofxcyl/image/upload", formData);
+      const response = await axios.post(`https://api.cloudinary.com/v1_1/${import.meta.env.VITE_CLOUDINARY_CLOUD_NAME}/image/upload`, formData);
       return response.data.secure_url; // URL of the uploaded image
     } catch (error) {
       console.error("Error uploading image to Cloudinary:", error);
@@ -102,7 +106,7 @@ const CompleteProfile = () => {
         {
           method: "PUT",
           headers: {
-            "Authorization": `Bearer ${user?.accessToken}`, // If you are using JWT for authentication
+            "Authorization": `Bearer ${localStorage.getItem("token")}`, // If you are using JWT for authentication
             "Content-Type": "application/json",
           },
           body: JSON.stringify(profileData), // Sending the profile data as JSON
@@ -116,6 +120,10 @@ const CompleteProfile = () => {
       const data = await response.json();
       console.log(data);
       setLoading(false);
+
+      // refetch
+      refreshUserData();
+      navigate("/profile");
       // Optionally, redirect user or show success message
     } catch (error) {
       setLoading(false);

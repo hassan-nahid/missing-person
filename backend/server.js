@@ -4,6 +4,7 @@ import 'dotenv/config';
 import connectDB from "./config/mongodb.js";
 import userRouter from "./routes/userRoute.js";
 import missingRouter from "./routes/missingRoute.js";
+import messageRouter from "./routes/messageRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", userRouter);
 app.use("/api/missing", missingRouter);
+app.use("/api/message", messageRouter);
 
 // Start the server
 app.listen(PORT, () => {

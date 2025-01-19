@@ -1,14 +1,10 @@
-import { useEffect } from "react";
 import userPhoto from "../assets/img/user.jpg";
 import { useUser } from "../context/userContext";
-import Card from "../components/shared/Card";
+// import Card from "../components/shared/Card";
 
 const Profile = () => {
   const { userData } = useUser();
 
-  useEffect(() => {
-    console.log(userData);
-  }, [userData]);
 
   return (
     <div className="min-h-screen bg-white py-10">
@@ -76,7 +72,7 @@ const Profile = () => {
             My Posts
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              <Card/>
+              {/* <Card/> */}
           </div>
         </div>
       </div>

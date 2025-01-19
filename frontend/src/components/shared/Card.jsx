@@ -1,7 +1,8 @@
+import { Link } from "react-router-dom";
 import noPhoto from "../../assets/img/no_photo.png";
 
-const Card = ({ data }) => {
-    const { name, photo, lastSeen, createdAt } = data;
+const Card = ({ data ,status }) => {
+    const { name, photo, lastSeen, createdAt ,_id} = data;
     const formattedDate = new Date(createdAt).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -19,7 +20,7 @@ const Card = ({ data }) => {
         </div>
         <div className="p-4">
           <h4 className="text-xl font-semibold text-gray-800">
-            Missing: {name}
+            {status}: {name}
           </h4>
           <p className="text-gray-500 mt-2">
             <span className="font-semibold">Last seen:</span> {lastSeen}
@@ -27,9 +28,9 @@ const Card = ({ data }) => {
           <p className="text-gray-500 mt-1">
             <span className="font-semibold">Date:</span> {formattedDate}
           </p>
-          <button className="btn btn-sm blue-bg hover:blue-bg text-white w-full mt-4 py-2 rounded">
+          <Link to={status === "Missing" ? `/missing_post_details/${_id}` : `/found_post_details/${_id}`} className="btn btn-sm blue-bg hover:blue-bg text-white w-full mt-4 py-2 rounded">
             View Details
-          </button>
+          </Link>
         </div>
       </div>
     );

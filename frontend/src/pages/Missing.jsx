@@ -6,10 +6,12 @@ import { FaSearch } from "react-icons/fa";
 import Card from "../components/shared/Card";
 import toast from "react-hot-toast";
 
+
 const Missing = () => {
   const [search, setSearch] = useState("");
   const [missingData, setMissingData] = useState([]); // Ensure it's initialized as an array
   const [loading, setLoading] = useState(true);
+
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
@@ -22,7 +24,7 @@ const Missing = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
@@ -31,7 +33,6 @@ const Missing = () => {
         }
 
         const data = await response.json();
-        console.log("Fetched Missing Data:", data); // Debug: Check structure of the fetched data
 
         // Ensure data contains an array of missing persons
         setMissingData(data?.data || []);
@@ -48,14 +49,11 @@ const Missing = () => {
   // Filter the missing data based on the search input
   const filteredData = Array.isArray(missingData)
     ? missingData.filter((item) => {
-        console.log("Item Structure:", item); // Debug: Log each item structure
         const values = Object.values(item);
-        console.log("Values in Filter:", values); // Debug: Log the values for filtering
         return values.join(" ").toLowerCase().includes(search.toLowerCase()); // Filter by all values
       })
     : [];
 
-  console.log("Filtered Data:", filteredData); // Debug: Log filtered data to verify
 
   return (
     <div className="min-h-screen">
@@ -92,7 +90,7 @@ const Missing = () => {
             <p>Loading...</p>
           ) : filteredData.length > 0 ? (
             filteredData.map((item) => (
-              <Card key={item._id} data={item} />
+              <Card key={item._id} data={item} status={"Missing"}/>
             ))
           ) : (
             <p>No results found</p>

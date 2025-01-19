@@ -11,6 +11,10 @@ import ErrorPage from "../pages/ErrorPage";
 import Missing from "../pages/Missing";
 import Found from "../pages/Found";
 import MissingPost from "../components/Missing/MissingPost";
+import PrivateRoute from "./PrivateRoute";
+import MissingPostDetails from "../components/Missing/MissingPostDetails";
+import PrivateProfileComplete from "./PrivateProfileComplete";
+import Message from "../pages/Message";
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +32,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "/missing_post",
-        element: <MissingPost />,
+        element: <PrivateRoute><PrivateProfileComplete><MissingPost /></PrivateProfileComplete></PrivateRoute>,
+      },
+      {
+        path: "/missing_post_details/:id",
+        element: <PrivateRoute><MissingPostDetails /></PrivateRoute>,
       },
       {
         path: "/found",
@@ -39,11 +47,15 @@ export const router = createBrowserRouter([
       },
       {
         path: "/profile",
-        element: <Profile />,
+        element: <PrivateRoute><Profile /></PrivateRoute>,
       },
       {
         path: "/complete_profile",
-        element: <CompleteProfile />,
+        element: <PrivateRoute><CompleteProfile /></PrivateRoute>,
+      },
+      {
+        path: "/message",
+        element: <PrivateRoute><Message /></PrivateRoute>,
       },
       {
         path: "/login",

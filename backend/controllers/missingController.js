@@ -1,4 +1,5 @@
 import MissingPost from "../models/missingModel.js";
+import User from "../models/userModel.js";
 
 export const createMissingPost = async (req, res) => {
   try {
@@ -30,18 +31,34 @@ export const getAllMissingPosts = async (req, res) => {
   }
 };
 
+
+
 export const getMissingPostById = async (req, res) => {
   try {
     const post = await MissingPost.findById(req.params.id);
+    
     if (!post) {
       return res.status(404).json({
         success: false,
         message: "Missing post not found",
       });
     }
+
+    const user = await User.findOne({ email: post.email }).select("-identificationType -identificationNumber -documentPhoto"); 
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
     res.status(200).json({
       success: true,
-      data: post,
+      data: {
+        post,
+        user,
+      },
     });
   } catch (error) {
     res.status(500).json({
@@ -50,6 +67,8 @@ export const getMissingPostById = async (req, res) => {
     });
   }
 };
+
+
 
 export const updateMissingPost = async (req, res) => {
   try {

@@ -10,6 +10,8 @@ import { IoIosLogOut } from "react-icons/io";
 import { FaUser } from "react-icons/fa";
 import { FaUserEdit } from "react-icons/fa";
 import { useUser } from "../../context/userContext";
+import { MdMessage } from "react-icons/md";
+
 
 
 const Navbar = () => {
@@ -122,6 +124,12 @@ const Navbar = () => {
                     <FaUser/> Profile
                   </Link>
                 </li>
+                <li>
+                  <Link to="/message" className="font-medium">
+                    <MdMessage/> Message
+                  </Link>
+                </li>
+                
                 {userData?.isProfileComplete ? (
                   <>
                     {/* <Link to="/edit_profile" className="font-medium">

@@ -117,8 +117,6 @@ const CompleteProfile = () => {
       if (!response.ok) {
         throw new Error("Failed to update profile. Please try again.");
       }
-      const data = await response.json();
-      console.log(data);
       setLoading(false);
 
       // refetch

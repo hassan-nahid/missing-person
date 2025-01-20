@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import Modal from "./Modal";
+import FoundModal from "./FoundModal";
 import { useUser } from "../../context/userContext";
 
-const MissingPostDetails = () => {
+const FoundPostDetails = () => {
   const { id } = useParams(); // Get the post ID from the URL
   const navigate = useNavigate(); // For navigation
   const [postDetails, setPostDetails] = useState(null);
@@ -13,9 +13,9 @@ const MissingPostDetails = () => {
   const { userData } = useUser();
 
   useEffect(() => {
-    const fetchMissingPostDetails = async () => {
+    const fetchFoundPostDetails = async () => {
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/missing/${id}`, {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/found/${id}`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -24,7 +24,7 @@ const MissingPostDetails = () => {
         });
 
         if (!response.ok) {
-          throw new Error("Failed to fetch missing post details");
+          throw new Error("Failed to fetch found post details");
         }
 
         const data = await response.json();
@@ -37,7 +37,7 @@ const MissingPostDetails = () => {
       }
     };
 
-    fetchMissingPostDetails();
+    fetchFoundPostDetails();
   }, [id]);
 
   const handleContactOwner = () => {
@@ -68,16 +68,16 @@ const MissingPostDetails = () => {
         <div className="relative w-full md:w-[75%] lg:w-[60%] mx-auto">
           <img
             src={post.photo || "default-image-url"} // Default image if no photo available
-            alt="Missing Person"
+            alt="Found Person"
             className="w-full h-full object-cover rounded-t-lg shadow-lg" // Full width, height, and shadow for a cool effect
           />
         </div>
 
         {/* Post and User Information Section */}
         <div className="p-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Missing Person Details</h2>
+          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Found Person Details</h2>
 
-          {/* Missing Post Details */}
+          {/* Found Post Details */}
           <div className="mb-8">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">Post Information</h3>
             <div className="text-gray-600 space-y-2">
@@ -85,10 +85,13 @@ const MissingPostDetails = () => {
                 <span className="font-semibold">Name:</span> {post.name}
               </p>
               <p>
-                <span className="font-semibold">Last Seen:</span> {post.lastSeen}
+                <span className="font-semibold">Found At:</span> {post.foundAt}
               </p>
               <p>
                 <span className="font-semibold">Date:</span> {new Date(post.createdAt).toLocaleDateString()}
+              </p>
+              <p>
+                <span className="font-semibold">Description:</span> {post.description}
               </p>
             </div>
           </div>
@@ -107,9 +110,7 @@ const MissingPostDetails = () => {
                 <span className="font-semibold">Phone:</span> {user.phone || "Not available"}
               </p>
               <p>
-                <span className="font-semibold">Address:</span>{" "}
-                {user.address?.street || "Not available"}, {user.address?.upazila || "Not available"},{" "}
-                {user.address?.district || "Not available"}
+                <span className="font-semibold">Address:</span> {user.address?.street || "Not available"}, {user.address?.upazila || "Not available"}, {user.address?.district || "Not available"}
               </p>
               <p>
                 <span className="font-semibold">Verified:</span> {user.isVerified ? "Yes" : "No"}
@@ -129,11 +130,11 @@ const MissingPostDetails = () => {
               Report Issue
             </button>
           </div>
-          <Modal postDetails={postDetails} />
+          <FoundModal postDetails={postDetails} />
         </div>
       </div>
     </div>
   );
 };
 
-export default MissingPostDetails;
+export default FoundPostDetails;

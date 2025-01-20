@@ -15,9 +15,9 @@ router.post("/user", registerOrLoginWithGoogle);
 // Route for completing profile (protected route)
 router.put("/complete-profile",verifyJWT ,completeProfile);
 // Update an existing user
-router.put("/:id", updateUser);
+// router.put("/:id", updateUser);
 
-// Delete a user
-router.delete("/:id", deleteUser);
+// // Delete a user
+// router.delete("/:id", deleteUser);
 
 export default router;

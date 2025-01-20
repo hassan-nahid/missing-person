@@ -2,7 +2,7 @@ import toast from "react-hot-toast";
 import { useUser } from "../../context/userContext";
 import { useState } from "react";
 
-const Modal = ({ postDetails }) => {
+const FoundModal = ({ postDetails }) => {
   const { userData } = useUser();
 
   const [formData, setFormData] = useState({
@@ -12,7 +12,7 @@ const Modal = ({ postDetails }) => {
     phone: userData?.phone || "",
     details: "",
     postId: postDetails?.post?._id || "",
-    postType: "missing",
+    postType: "found",
   });
 
   const handleChange = (e) => {
@@ -22,9 +22,7 @@ const Modal = ({ postDetails }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    console.log(formData);  // Log formData to ensure postType is included
-  
+
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/message`, {
         method: "POST",
@@ -34,7 +32,7 @@ const Modal = ({ postDetails }) => {
         },
         body: JSON.stringify(formData),
       });
-  
+
       if (response.ok) {
         toast.success("Message sent successfully");
         document.getElementById("my_modal_5").close();
@@ -45,7 +43,7 @@ const Modal = ({ postDetails }) => {
       console.error("Error sending message:", error);
     }
   };
-  
+
   return (
     <div>
       <dialog id="my_modal_5" className="modal modal-bottom sm:modal-middle">
@@ -143,4 +141,4 @@ const Modal = ({ postDetails }) => {
   );
 };
 
-export default Modal;
+export default FoundModal;

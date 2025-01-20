@@ -6,12 +6,10 @@ import { FaSearch } from "react-icons/fa";
 import Card from "../components/shared/Card";
 import toast from "react-hot-toast";
 
-
 const Missing = () => {
   const [search, setSearch] = useState("");
   const [missingData, setMissingData] = useState([]); // Ensure it's initialized as an array
   const [loading, setLoading] = useState(true);
-
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
@@ -46,14 +44,15 @@ const Missing = () => {
     fetchMissingData();
   }, []);
 
-  // Filter the missing data based on the search input
+  // Filter the missing data based on the search input and exclude found persons
   const filteredData = Array.isArray(missingData)
-    ? missingData.filter((item) => {
-        const values = Object.values(item);
-        return values.join(" ").toLowerCase().includes(search.toLowerCase()); // Filter by all values
-      })
+    ? missingData
+        .filter((item) => !item.foundStatus) // Exclude items where foundStatus is true
+        .filter((item) => {
+          const values = Object.values(item);
+          return values.join(" ").toLowerCase().includes(search.toLowerCase()); // Filter by all values
+        })
     : [];
-
 
   return (
     <div className="min-h-screen">
@@ -90,7 +89,7 @@ const Missing = () => {
             <p>Loading...</p>
           ) : filteredData.length > 0 ? (
             filteredData.map((item) => (
-              <Card key={item._id} data={item} status={"Missing"}/>
+              <Card key={item._id} data={item} status={"Missing"} />
             ))
           ) : (
             <p>No results found</p>

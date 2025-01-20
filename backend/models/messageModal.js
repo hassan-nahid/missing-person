@@ -32,6 +32,11 @@ const messageSchema = new mongoose.Schema(
       ref: 'Post', // Reference another collection (if applicable)
       required: true,
     },
+    postType: {
+      type: String,
+      enum: ['missing', 'found'],
+      required: true,
+    },
   },
   { timestamps: true } // Automatically add createdAt and updatedAt fields
 );

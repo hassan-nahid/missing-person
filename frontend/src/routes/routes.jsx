@@ -15,6 +15,8 @@ import PrivateRoute from "./PrivateRoute";
 import MissingPostDetails from "../components/Missing/MissingPostDetails";
 import PrivateProfileComplete from "./PrivateProfileComplete";
 import Message from "../pages/Message";
+import FoundPost from "../components/Found/FoundPost";
+import FoundPostDetails from "../components/Found/FoundPostDetails";
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +43,14 @@ export const router = createBrowserRouter([
       {
         path: "/found",
         element: <Found />,
+      },
+      {
+        path: "/found_post",
+        element: <PrivateRoute><PrivateProfileComplete><FoundPost/></PrivateProfileComplete></PrivateRoute>,
+      },
+      {
+        path: "/found_post_details/:id",
+        element: <PrivateRoute><FoundPostDetails/></PrivateRoute>,
       },
       {
         path: "/about",

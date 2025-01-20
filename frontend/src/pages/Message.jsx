@@ -6,16 +6,26 @@ import toast from "react-hot-toast";
 const Message = () => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
-  const {userData} = useUser();
+  const { userData } = useUser();
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/message/${userData?.email}`);
+        const token = localStorage.getItem("token"); // Retrieve token from localStorage
+
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/message/${userData?.email}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`, // Include the token in headers
+            },
+          }
+        );
+
         setMessages(response.data.data);
       } catch (err) {
-        toast.error(err.message);
+        toast.error(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }
@@ -27,7 +37,6 @@ const Message = () => {
   if (loading) {
     return <div>Loading messages...</div>;
   }
-
 
   return (
     <div className="container mx-auto p-4">
@@ -42,7 +51,7 @@ const Message = () => {
               className="border p-4 rounded shadow-md bg-white"
             >
               <h2 className="text-lg font-semibold">
-                Missing Person: {message.missingPersonName || "Unknown"}
+                {message.postType === "missing" ? "Missing" : "Found"} Person: {message.missingPersonName || "Unknown"}
               </h2>
               <p>
                 <strong>From:</strong> {message.from}

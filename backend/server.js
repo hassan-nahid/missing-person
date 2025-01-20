@@ -5,6 +5,7 @@ import connectDB from "./config/mongodb.js";
 import userRouter from "./routes/userRoute.js";
 import missingRouter from "./routes/missingRoute.js";
 import messageRouter from "./routes/messageRoute.js";
+import foundRouter from "./routes/foundRoute.js";
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,6 +24,7 @@ app.get("/", (req, res) => {
 app.use("/api/user", userRouter);
 app.use("/api/missing", missingRouter);
 app.use("/api/message", messageRouter);
+app.use("/api/found", foundRouter);
 
 // Start the server
 app.listen(PORT, () => {

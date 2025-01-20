@@ -8,6 +8,6 @@ const router = express.Router();
 router.post('/', verifyJWT ,createMessage);
 
 // Route to get messages by email
-router.get('/:email' ,getMessagesByEmail);
+router.get('/:email',verifyJWT ,getMessagesByEmail);
 
 export default router;

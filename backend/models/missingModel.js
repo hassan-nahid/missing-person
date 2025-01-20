@@ -60,6 +60,29 @@ const missingPostSchema = new mongoose.Schema(
       type: String,
       required: [true, "User email is required"],
     },
+    foundStatus: {
+      type: Boolean,
+      default: false, // Default is false (missing)
+    },
+    foundAliveStatus: {
+      type: String,
+      enum: ["Alive", "Dead"], // Removed "Unknown"
+      required: function() {
+        return this.foundStatus === true; // Only required if the person is found
+      },
+    },
+    caseType: {
+      type: String,
+      enum: ["Kidnapping", "Accident", "Runaway", "Other"], // Different case types
+      required: false, // Optional field, can be updated later
+    },
+    otherCaseType: {
+      type: String,
+      required: function() {
+        return this.caseType === "Other"; // Only required if caseType is "Other"
+      },
+      trim: true,
+    },
     createdAt: {
       type: Date,
       default: Date.now,

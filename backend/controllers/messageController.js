@@ -1,10 +1,11 @@
+import FoundPost from "../models/foundModel.js";
 import Message from "../models/messageModal.js";
 import MissingPost from "../models/missingModel.js";
 
 
 export const createMessage = async (req, res) => {
   try {
-    const { from, to, name, phone, details, postId } = req.body;
+    const { from, to, name, phone, details, postId, postType } = req.body;
 
     // Validate required fields
     if (!from || !to || !name || !phone || !details || !postId) {
@@ -12,7 +13,7 @@ export const createMessage = async (req, res) => {
     }
 
     // Create and save message
-    const message = new Message({ from, to, name, phone, details, postId });
+    const message = new Message({ from, to, name, phone, details, postId, postType });
     await message.save();
 
     res.status(201).json({ success: true, message: 'Message saved successfully!', data: message });
@@ -37,13 +38,15 @@ export const getMessagesByEmail = async (req, res) => {
       $or: [{ from: email }, { to: email }],
     }).sort({ createdAt: -1 });
 
-    // Enrich messages with missing person's name based on postId
+    // Enrich messages with missing or found post's name based on postId and postType
     const enrichedMessages = await Promise.all(
       messages.map(async (message) => {
-        const post = await MissingPost.findById(message.postId);
+        const postModel = message.postType === 'missing' ? MissingPost : FoundPost; // Select model based on postType
+        const post = await postModel.findById(message.postId); // Query the appropriate collection
+
         return {
           ...message.toObject(),
-          missingPersonName: post ? post.name : null, // Assuming the Post model has a `missingPersonName` field
+          missingPersonName: post ? post.name : null, // Assuming the Post model has a `name` field
         };
       })
     );

@@ -17,6 +17,8 @@ import PrivateProfileComplete from "./PrivateProfileComplete";
 import Message from "../pages/Message";
 import FoundPost from "../components/Found/FoundPost";
 import FoundPostDetails from "../components/Found/FoundPostDetails";
+import AboutUs from "../pages/AboutUs";
+import ContactUs from "../pages/ContactUs";
 
 export const router = createBrowserRouter([
   {
@@ -53,7 +55,12 @@ export const router = createBrowserRouter([
         element: <PrivateRoute><FoundPostDetails/></PrivateRoute>,
       },
       {
-        path: "/about",
+        path: "/about_us",
+        element: <AboutUs/>,
+      },
+      {
+        path: "/contact_us",
+        element: <ContactUs/>,
       },
       {
         path: "/profile",

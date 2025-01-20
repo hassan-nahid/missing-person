@@ -67,7 +67,7 @@ const Navbar = () => {
         <Link className="font-medium" to={"/about_us"}>About Us</Link>
       </li>
       <li>
-        <Link className="font-medium" to={"/about_us"}>Contact Us</Link>
+        <Link className="font-medium" to={"/contact_us"}>Contact Us</Link>
       </li>
     </>
   );
@@ -108,10 +108,10 @@ const Navbar = () => {
               >
                 <div className="w-10 rounded-full">
                   <img
-                    src={userPhoto}
+                    src={userData?.userPhoto ? userData?.userPhoto : userPhoto}
                     alt="User"
                     title={user?.displayName}
-                    className="rounded-full"
+                    className="rounded-full border-2 border-stone-300 object-cover"
                   />
                 </div>
               </label>

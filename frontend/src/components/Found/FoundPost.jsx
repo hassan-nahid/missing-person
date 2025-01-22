@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUser } from "../../context/userContext";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const FoundPost = () => {
   const { userData } = useUser();
@@ -17,6 +18,7 @@ const FoundPost = () => {
     photo: null,
     description: "",
   });
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
 
@@ -80,6 +82,7 @@ const FoundPost = () => {
 
       if (response.ok) {
         toast.success("Post submitted successfully!");
+        navigate("/found");
         setFormData({
           name: "",
           age: "",

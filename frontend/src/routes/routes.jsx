@@ -19,6 +19,9 @@ import FoundPost from "../components/Found/FoundPost";
 import FoundPostDetails from "../components/Found/FoundPostDetails";
 import AboutUs from "../pages/AboutUs";
 import ContactUs from "../pages/ContactUs";
+import FoundPostUpdateStatus from "../components/Profile/FoundPostUpdateStatus";
+import MissingPostUpdateStatus from "../components/Profile/MissingPostUpdateStatus";
+import Analytics from "../pages/Analytics";
 
 export const router = createBrowserRouter([
   {
@@ -75,12 +78,24 @@ export const router = createBrowserRouter([
         element: <PrivateRoute><Message /></PrivateRoute>,
       },
       {
+        path: "/found_post_update_status/:id",
+        element: <PrivateRoute><PrivateProfileComplete><FoundPostUpdateStatus /></PrivateProfileComplete></PrivateRoute>,
+      },
+      {
+        path: "/missing_post_update_status/:id",
+        element: <PrivateRoute><PrivateProfileComplete><MissingPostUpdateStatus /></PrivateProfileComplete></PrivateRoute>,
+      },
+      {
         path: "/login",
         element: <Login />,
       },
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/analytics",
+        element: <Analytics />,
       }
     ]
   },

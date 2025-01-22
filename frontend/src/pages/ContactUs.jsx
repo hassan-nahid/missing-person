@@ -54,15 +54,15 @@ const ContactUs = () => {
                         <ul className="space-y-4 text-gray-700 text-lg">
                             <li>
                                 <strong className="blue-text">Email:</strong>
-                                <a href="mailto:contact@manusherkhoj.com" className="hover:text-sky-500">contact@manusherkhoj.com</a>
+                                <a href="mailto:contact@manusherkhoj.com" className="hover:text-sky-500"> contact@manusherkhoj.com</a>
                             </li>
                             <li>
                                 <strong className="blue-text">Phone:</strong>
-                                <span>+880-123-456-7890</span>
+                                <span> +8801780365440</span>
                             </li>
                             <li>
                                 <strong className="blue-text">Address:</strong>
-                                <span>Dhaka, Bangladesh</span>
+                                <span> Sirajganj, Bangladesh</span>
                             </li>
                         </ul>
                     </div>

@@ -6,7 +6,6 @@ import HomeTitle from "../components/shared/HomeTitle";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-
 const Home = () => {
   const [missingData, setMissingData] = useState([]);
   const [foundData, setFoundData] = useState([]);
@@ -25,7 +24,9 @@ const Home = () => {
 
       if (!response.ok) throw new Error("Failed to fetch missing data");
       const data = await response.json();
-      setMissingData(data?.data || []);
+      // Filter out missing cases where foundStatus is true
+      const filteredMissingData = data?.data?.filter((item) => !item.foundStatus) || [];
+      setMissingData(filteredMissingData);
     } catch (error) {
       toast.error(error.message);
     }
@@ -44,7 +45,9 @@ const Home = () => {
 
       if (!response.ok) throw new Error("Failed to fetch found data");
       const data = await response.json();
-      setFoundData(data?.data || []);
+      // Filter out found cases where foundStatus is true
+      const filteredFoundData = data?.data?.filter((item) => !item.foundStatus) || [];
+      setFoundData(filteredFoundData);
     } catch (error) {
       toast.error(error.message);
     }
@@ -59,13 +62,13 @@ const Home = () => {
   // Filtered high priority cases (age < 18 or serious illness/disabled in missing)
   const highDemandCases = [
     ...missingData.filter(
-      (item) => item.age < 18 || item.seriousIllnessOrDisabled
+      (item) => (item.age < 18 || item.seriousIllnessOrDisabled) && !item.foundStatus
     ),
-    ...foundData.filter((item) => item.age < 18)
+    ...foundData.filter((item) => item.age < 18 && !item.foundStatus),
   ];
 
   // Limit to 3 cards initially for high demand
-  const displayedHighDemandCases = highDemandCases && highDemandCases.slice(0, 3)
+  const displayedHighDemandCases = highDemandCases.slice(0, 3);
 
   // Get 3 most recent missing and found posts
   const recentMissing = missingData.slice(0, 3);
@@ -75,7 +78,6 @@ const Home = () => {
     <div>
       <Banner />
       {/* High Priority Cases */}
-
       {/* Recent Missing Cases */}
       <div className="container mx-auto py-8">
         <div className="text-center mb-8">
@@ -84,7 +86,10 @@ const Home = () => {
             These are the most recent missing person cases.
           </p>
           <div className="flex justify-end mt-5 mr-8">
-            <Link to={"/missing"} className="btn btn-sm blue-bg hover:blue-bg text-white">Show More<FaLongArrowAltRight /></Link>
+            <Link to={"/missing"} className="btn btn-sm blue-bg hover:blue-bg text-white">
+              Show More
+              <FaLongArrowAltRight />
+            </Link>
           </div>
         </div>
 
@@ -109,7 +114,10 @@ const Home = () => {
             These are the most recent found person cases.
           </p>
           <div className="flex justify-end mt-5 mr-8">
-            <Link to={"/found"} className="btn btn-sm blue-bg hover:blue-bg text-white">Show More<FaLongArrowAltRight /></Link>
+            <Link to={"/found"} className="btn btn-sm blue-bg hover:blue-bg text-white">
+              Show More
+              <FaLongArrowAltRight />
+            </Link>
           </div>
         </div>
 
@@ -125,6 +133,8 @@ const Home = () => {
           )}
         </div>
       </div>
+
+      {/* High Priority Cases */}
       <div className="container mx-auto py-8">
         <div className="text-center mb-8">
           <HomeTitle text="High Priority Cases" />
@@ -132,7 +142,10 @@ const Home = () => {
             These are the urgent cases that need immediate attention.
           </p>
           <div className="flex justify-end mt-5 mr-8">
-            <Link to={"/missing"} className="btn btn-sm blue-bg hover:blue-bg text-white">Show More<FaLongArrowAltRight /></Link>
+            <Link to={"/missing"} className="btn btn-sm blue-bg hover:blue-bg text-white">
+              Show More
+              <FaLongArrowAltRight />
+            </Link>
           </div>
         </div>
 
@@ -141,14 +154,16 @@ const Home = () => {
             <p>Loading...</p>
           ) : displayedHighDemandCases.length > 0 ? (
             displayedHighDemandCases.map((item) => (
-              <Card key={item._id} data={item} status={item.age < 18 ? "Urgent" : "High Priority"} />
+              <Card
+                key={item._id}
+                data={item}
+                status={item.seriousIllnessOrDisabled ? "Missing" : "Found"}
+              />
             ))
           ) : (
             <p>No urgent cases found</p>
           )}
         </div>
-
-
       </div>
     </div>
   );

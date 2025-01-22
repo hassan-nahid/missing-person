@@ -61,6 +61,8 @@ const MissingPostDetails = () => {
   const { post, user } = postDetails || {};
   if (!post || !user) return <p>No data found</p>;
 
+  const btnDisabled = user.email === userData.email ? true : false;
+
   return (
     <div className="container mx-auto py-8 px-4">
       <div className="bg-white shadow-xl rounded-lg overflow-hidden">
@@ -121,11 +123,14 @@ const MissingPostDetails = () => {
           <div className="mt-6 flex flex-col sm:flex-row justify-between gap-4">
             <button
               onClick={handleContactOwner}
+              disabled={btnDisabled}
               className="btn blue-bg text-white px-6 py-2 rounded-lg hover:blue-bg transition duration-300 w-full sm:w-auto"
             >
               Contact Owner
             </button>
-            <button className="btn bg-red-400 text-white px-6 py-2 rounded-lg hover:bg-red-400 transition duration-300 w-full sm:w-auto">
+            <button
+              disabled={btnDisabled}
+              className="btn bg-red-400 text-white px-6 py-2 rounded-lg hover:bg-red-400 transition duration-300 w-full sm:w-auto">
               Report Issue
             </button>
           </div>

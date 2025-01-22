@@ -68,45 +68,22 @@ export const getMissingPostById = async (req, res) => {
   }
 };
 
-
-
-export const updateMissingPost = async (req, res) => {
+export const getMissingPostsByEmail = async (req, res) => {
   try {
-    const updatedPost = await MissingPost.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
-    if (!updatedPost) {
+    const { email } = req.params;
+
+    const posts = await MissingPost.find({ email });
+
+    if (!posts.length) {
       return res.status(404).json({
         success: false,
-        message: "Missing post not found",
+        message: "No missing posts found for the provided email",
       });
     }
-    res.status(200).json({
-      success: true,
-      data: updatedPost,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
 
-export const deleteMissingPost = async (req, res) => {
-  try {
-    const deletedPost = await MissingPost.findByIdAndDelete(req.params.id);
-    if (!deletedPost) {
-      return res.status(404).json({
-        success: false,
-        message: "Missing post not found",
-      });
-    }
     res.status(200).json({
       success: true,
-      message: "Missing post deleted successfully",
+      data: posts,
     });
   } catch (error) {
     res.status(500).json({
@@ -115,3 +92,123 @@ export const deleteMissingPost = async (req, res) => {
     });
   }
 };
+
+export const deleteMissingPostById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Find the post by ID and delete it
+    const deletedPost = await MissingPost.findByIdAndDelete(id);
+
+    if (!deletedPost) {
+      return res.status(404).json({
+        success: false,
+        message: "Missing post not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Missing post deleted successfully",
+      data: deletedPost,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
+export const updateFoundStatus = async (req, res) => {
+  try {
+    const { id } = req.params; // Post ID from the route parameter
+    const { foundStatus, caseStatus, caseType, otherCaseType } = req.body; // Data from the request body
+
+    // Validate foundStatus
+    if (typeof foundStatus !== "boolean") {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid foundStatus. It must be a boolean.",
+      });
+    }
+
+    // Find the post by ID
+    const existingPost = await MissingPost.findById(id);
+
+    if (!existingPost) {
+      return res.status(404).json({
+        success: false,
+        message: "Missing post not found.",
+      });
+    }
+
+    // Prevent updates if foundStatus is already true
+    if (existingPost.foundStatus === true) {
+      return res.status(400).json({
+        success: false,
+        message: "Status update not allowed. This post has already been marked as found.",
+      });
+    }
+
+    // Validate caseStatus only if foundStatus is true
+    if (foundStatus === true && !["Alive", "Dead"].includes(caseStatus)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid caseStatus. It must be 'Alive' or 'Dead' when foundStatus is true.",
+      });
+    }
+
+    // Validate caseType
+    if (caseType && !["Kidnapping", "Accident", "Runaway", "Other"].includes(caseType)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid caseType. It must be one of 'Kidnapping', 'Accident', 'Runaway', or 'Other'.",
+      });
+    }
+
+    // Validate otherCaseType if caseType is "Other"
+    if (caseType === "Other" && (!otherCaseType || otherCaseType.trim() === "")) {
+      return res.status(400).json({
+        success: false,
+        message: "otherCaseType is required when caseType is 'Other'.",
+      });
+    }
+
+    // Update the missing post
+    const updateData = {
+      foundStatus,
+      caseStatus: foundStatus ? caseStatus : undefined, // Clear caseStatus if foundStatus is false
+      caseType,
+      otherCaseType: caseType === "Other" ? otherCaseType : undefined, // Clear otherCaseType if caseType is not "Other"
+    };
+
+    const updatedPost = await MissingPost.findByIdAndUpdate(id, updateData, {
+      new: true,
+      runValidators: true,
+    });
+
+    // Success response
+    res.status(200).json({
+      success: true,
+      message: "Found status and case type updated successfully.",
+      data: updatedPost,
+    });
+  } catch (error) {
+    // Handle errors
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while updating the found status and case type.",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+
+

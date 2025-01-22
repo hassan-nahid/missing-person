@@ -90,47 +90,23 @@ export const getFoundPostsByEmail = async (req, res) => {
   }
 };
 
-export const updateFoundPost = async (req, res) => {
+export const deleteFoundPostById = async (req, res) => {
   try {
-    const updatedPost = await FoundPost.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const { id } = req.params;
 
-    if (!updatedPost) {
+    const post = await FoundPost.findByIdAndDelete(id);
+
+    if (!post) {
       return res.status(404).json({
         success: false,
-        message: "Found person record not found",
+        message: "Post not found",
       });
     }
 
     res.status(200).json({
       success: true,
-      data: updatedPost,
-    });
-  } catch (error) {
-    res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-export const deleteFoundPost = async (req, res) => {
-  try {
-    const deletedPost = await FoundPost.findByIdAndDelete(req.params.id);
-
-    if (!deletedPost) {
-      return res.status(404).json({
-        success: false,
-        message: "Found person record not found",
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "Found person record deleted successfully",
+      message: "Post deleted successfully",
+      data: post,
     });
   } catch (error) {
     res.status(500).json({
@@ -139,3 +115,62 @@ export const deleteFoundPost = async (req, res) => {
     });
   }
 };
+
+
+export const updateFoundPersonStatus = async (req, res) => {
+  try {
+    const { id } = req.params; // ID from route params
+    const { foundStatus, foundAliveStatus, additionalInfo, handoverDetails } = req.body;
+
+    // Find the post by ID
+    const foundPerson = await FoundPost.findById(id);
+
+    if (!foundPerson) {
+      return res.status(404).json({
+        success: false,
+        message: "Found person post not found.",
+      });
+    }
+
+    if (foundPerson.foundStatus === true) {
+      return res.status(400).json({
+        success: false,
+        message: "Status update not allowed. This post has already been marked as found.",
+      });
+    }
+
+    // Update fields
+    if (typeof foundStatus !== "undefined") {
+      foundPerson.foundStatus = foundStatus;
+    }
+    if (typeof foundAliveStatus !== "undefined") {
+      foundPerson.caseStatus = foundAliveStatus;
+    }
+    if (additionalInfo) {
+      foundPerson.additionalDetails = additionalInfo;
+    }
+    if (handoverDetails && foundAliveStatus === "Alive") {
+      foundPerson.handoverDetails = {
+        ...foundPerson.handoverDetails,
+        ...handoverDetails,
+      };
+    }
+
+    // Save the updated document
+    const updatedPerson = await foundPerson.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Found person status updated successfully.",
+      data: updatedPerson,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while updating the found person status.",
+      error: error.message,
+    });
+  }
+};
+

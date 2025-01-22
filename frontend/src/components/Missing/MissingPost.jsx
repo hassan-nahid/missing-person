@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useUser } from "../../context/userContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-
+import { useNavigate } from "react-router-dom";
 
 const MissingPost = () => {
   const { userData } = useUser();
@@ -22,6 +22,7 @@ const MissingPost = () => {
     description: "",
   });
 
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -84,6 +85,7 @@ const MissingPost = () => {
 
       if (response.ok) {
         toast.success("Post submitted successfully!");
+        navigate("/missing")
         setFormData({
           name: "",
           age: "",

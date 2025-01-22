@@ -1,11 +1,107 @@
 import userPhoto from "../assets/img/user.jpg";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuthState } from "react-firebase-hooks/auth";
+import auth from "../firebase/firebase.config";
 import { useUser } from "../context/userContext";
-// import Card from "../components/shared/Card";
+import ProfileCard from "../components/Profile/ProfileCard";
+import Swal from "sweetalert2";
+
 
 const Profile = () => {
   const { userData } = useUser();
+  const [user] = useAuthState(auth);
+
+  // State to hold posts
+  const [foundPosts, setFoundPosts] = useState([]);
+  const [missingPosts, setMissingPosts] = useState([]);
+
+  const fetchPosts = async () => {
+    try {
+      if (userData?.email && user) {
+        const token = localStorage.getItem("token"); // Retrieve token from Firebase Auth
+
+        // Fetch Found Posts
+        const foundResponse = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/found/found/email/${user.email}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setFoundPosts(foundResponse.data.data || []);
+
+        // Fetch Missing Posts
+        const missingResponse = await axios.get(
+          `${import.meta.env.VITE_API_URL}/api/missing/missing/email/${user.email}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setMissingPosts(missingResponse.data.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching posts:", error.message);
+    }
+  };
+
+  useEffect(() => {
+    fetchPosts();
+  }, [user?.email, userData]);
 
 
+  const handleDelete = async (postId, status) => {
+    try {
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      });
+  
+      if (result.isConfirmed) {
+        // API Call for Deletion
+        const endpoint =
+          status === "Found"
+            ? `${import.meta.env.VITE_API_URL}/api/found/found/delete/${postId}`
+            : `${import.meta.env.VITE_API_URL}/api/missing/missing/delete/${postId}`;
+  
+        await axios.delete(endpoint, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+  
+        // Update state after deletion
+        if (status === "Found") {
+          setFoundPosts((prev) => prev.filter((post) => post._id !== postId));
+        } else {
+          setMissingPosts((prev) => prev.filter((post) => post._id !== postId));
+        }
+  
+        // Show success alert
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      console.error("Error deleting post:", error.message);
+      Swal.fire({
+        title: "Error!",
+        text: "There was an issue deleting your file.",
+        icon: "error",
+      });
+    }
+  };
+  
   return (
     <div className="min-h-screen bg-white py-10">
       <div className="container mx-auto px-4">
@@ -72,10 +168,26 @@ const Profile = () => {
             My Posts
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {/* <Card/> */}
+            {foundPosts.map((post) => (
+              <ProfileCard
+                key={post._id}
+                data={post}
+                status="Found"
+                handleDelete={handleDelete}
+              />
+            ))}
+            {missingPosts.map((post) => (
+              <ProfileCard
+                key={post._id}
+                data={post}
+                status="Missing"
+                handleDelete={handleDelete}
+              />
+            ))}
           </div>
         </div>
       </div>
+
     </div>
   );
 };

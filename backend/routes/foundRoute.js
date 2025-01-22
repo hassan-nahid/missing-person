@@ -1,20 +1,24 @@
 import express from "express";
 import {
   createFoundPost,
+  deleteFoundPostById,
   getAllFoundPosts,
   getFoundPostById,
   getFoundPostsByEmail,
-  updateFoundPost,
-  deleteFoundPost,
+  updateFoundPersonStatus,
 } from "../controllers/foundController.js";
+import { verifyJWT } from "../middleware/Auth.js";
 
 const router = express.Router();
 
 router.post("/", createFoundPost);
 router.get("/", getAllFoundPosts);
 router.get("/:id", getFoundPostById);
-// router.get("/found/email/:email", getFoundPostsByEmail);
-// router.put("/found/:id", updateFoundPost);
-// router.delete("/found/:id", deleteFoundPost);
+router.get("/found/email/:email", verifyJWT ,getFoundPostsByEmail);
+router.delete("/found/delete/:id", verifyJWT ,deleteFoundPostById);
+router.put("/found/status/:id",verifyJWT, updateFoundPersonStatus);
+
+
+
 
 export default router;

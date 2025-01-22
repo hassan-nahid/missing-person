@@ -64,10 +64,10 @@ const missingPostSchema = new mongoose.Schema(
       type: Boolean,
       default: false, // Default is false (missing)
     },
-    foundAliveStatus: {
+    caseStatus: {
       type: String,
       enum: ["Alive", "Dead"], // Removed "Unknown"
-      required: function() {
+      required: function () {
         return this.foundStatus === true; // Only required if the person is found
       },
     },
@@ -78,9 +78,14 @@ const missingPostSchema = new mongoose.Schema(
     },
     otherCaseType: {
       type: String,
-      required: function() {
+      required: function () {
         return this.caseType === "Other"; // Only required if caseType is "Other"
       },
+      trim: true,
+    },
+    additionalInfo: {
+      type: String,
+      required: false, // Optional field for extra details
       trim: true,
     },
     createdAt: {

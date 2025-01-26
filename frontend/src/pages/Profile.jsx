@@ -1,8 +1,8 @@
 import userPhoto from "../assets/img/user.jpg";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuthState } from "react-firebase-hooks/auth";
-import auth from "../firebase/firebase.config";
+// import { useAuthState } from "react-firebase-hooks/auth";
+// import auth from "../firebase/firebase.config";
 import { useUser } from "../context/userContext";
 import ProfileCard from "../components/Profile/ProfileCard";
 import Swal from "sweetalert2";
@@ -10,7 +10,7 @@ import Swal from "sweetalert2";
 
 const Profile = () => {
   const { userData } = useUser();
-  const [user] = useAuthState(auth);
+  // const [user] = useAuthState(auth);
 
   // State to hold posts
   const [foundPosts, setFoundPosts] = useState([]);
@@ -18,39 +18,48 @@ const Profile = () => {
 
   const fetchPosts = async () => {
     try {
-      if (userData?.email && user) {
-        const token = localStorage.getItem("token"); // Retrieve token from Firebase Auth
-
+      if (userData?.email) {
+        const token = localStorage.getItem("token");
+  
         // Fetch Found Posts
         const foundResponse = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/found/found/email/${user.email}`,
+          `${import.meta.env.VITE_API_URL}/api/found/found/email/${userData.email}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+  
+        if (foundResponse.data.data.length === 0) {
+          console.log("No found posts available.");
+        }
         setFoundPosts(foundResponse.data.data || []);
-
+  
         // Fetch Missing Posts
         const missingResponse = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/missing/missing/email/${user.email}`,
+          `${import.meta.env.VITE_API_URL}/api/missing/missing/email/${userData.email}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+  
+        if (missingResponse.data.data.length === 0) {
+          console.log("No missing posts available.");
+        }
         setMissingPosts(missingResponse.data.data || []);
       }
     } catch (error) {
       console.error("Error fetching posts:", error.message);
     }
   };
+  
 
   useEffect(() => {
     fetchPosts();
-  }, [user?.email, userData]);
+  }, [ userData]);
 
 
   const handleDelete = async (postId, status) => {
@@ -163,32 +172,38 @@ const Profile = () => {
         </div>
 
         {/* Posts Section */}
+       
         <div className="mt-12">
           <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">
             My Posts
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {foundPosts.map((post) => (
-              <ProfileCard
-                key={post._id}
-                data={post}
-                status="Found"
-                handleDelete={handleDelete}
-              />
-            ))}
-            {missingPosts.map((post) => (
-              <ProfileCard
-                key={post._id}
-                data={post}
-                status="Missing"
-                handleDelete={handleDelete}
-              />
-            ))}
+            {foundPosts.length > 0 &&
+              foundPosts.map((post) => (
+                <ProfileCard
+                  key={post._id}
+                  data={post}
+                  status="Found"
+                  handleDelete={handleDelete}
+                />
+              ))}
+            {missingPosts.length > 0 &&
+              missingPosts.map((post) => (
+                <ProfileCard
+                  key={post._id}
+                  data={post}
+                  status="Missing"
+                  handleDelete={handleDelete}
+                />
+              ))}
+            {foundPosts.length === 0 && missingPosts.length === 0 && (
+              <p className="text-center text-gray-500">No posts available.</p>
+            )}
+          </div>
           </div>
         </div>
       </div>
 
-    </div>
   );
 };
 

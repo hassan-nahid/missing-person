@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const AboutUs = () => {
     return (
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-white">
         <div className="container mx-auto px-4 py-10">
           {/* Header Section */}
           <div className="text-center mb-12">

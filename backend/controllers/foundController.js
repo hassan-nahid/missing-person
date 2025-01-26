@@ -71,10 +71,11 @@ export const getFoundPostsByEmail = async (req, res) => {
 
     const posts = await FoundPost.find({ email });
 
-    if (!posts.length) {
-      return res.status(404).json({
-        success: false,
-        message: "No records found for the provided email",
+    if (!posts || posts.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: [],
+        message: "No found posts for the provided email",
       });
     }
 
@@ -89,6 +90,7 @@ export const getFoundPostsByEmail = async (req, res) => {
     });
   }
 };
+
 
 export const deleteFoundPostById = async (req, res) => {
   try {

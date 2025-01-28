@@ -10,6 +10,10 @@ import AdminMessage from "../page/AdminMessage";
 import AddAdmin from "../page/AddAdmin";
 import UserDetails from "../components/User/UserDetails";
 import VerifyUser from "../page/VerifyUser";
+import MissingPostManage from "../page/MissingPostManage";
+import FoundPostManage from "../page/FoundPostManage";
+import AdminMissingDetails from "../components/Missing/AdminMissingDetails";
+import AdminFoundDetails from "../components/Found/AdminFoundDetails";
 
 export const router = createBrowserRouter([
     {
@@ -31,6 +35,22 @@ export const router = createBrowserRouter([
         {
           path: "/verify_user",
           element: <VerifyUser/>,
+        },
+        {
+          path: "/missing_post_manage",
+          element: <MissingPostManage/>,
+        },
+        {
+          path: "/admin_missing_details/:id",
+          element: <AdminMissingDetails/>,
+        },
+        {
+          path: "/found_post_manage",
+          element: <FoundPostManage/>,
+        },
+        {
+          path: "/admin_found_details/:id",
+          element: <AdminFoundDetails/>,
         },
         {
           path: "/admin_message",

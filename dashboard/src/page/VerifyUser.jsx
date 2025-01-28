@@ -56,7 +56,9 @@ const VerifyUser = () => {
 
     return (
         <div className="p-6">
-            {/* Search Bar */}
+            <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold blue-text">Verify User</h1>
+            </div>
             <div className="mb-4 flex justify-between items-center">
                 <input
                     type="text"
@@ -87,7 +89,7 @@ const VerifyUser = () => {
                     </thead>
                     <tbody>
                         {users
-                            .filter(user => {
+                            .reverse().filter(user => {
                                 const lowercasedQuery = searchQuery.toLowerCase();
                                 return (
                                     user.name?.toLowerCase().includes(lowercasedQuery) ||

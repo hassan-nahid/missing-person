@@ -183,6 +183,7 @@ const FoundPost = () => {
                   name="photo"
                   onChange={handleChange}
                   className="file-input w-full"
+                  required 
                 />
               </div>
             </div>

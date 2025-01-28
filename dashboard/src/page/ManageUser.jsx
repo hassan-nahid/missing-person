@@ -90,7 +90,9 @@ const ManageUser = () => {
 
     return (
         <div className="p-6">
-            {/* Search Bar */}
+            <div className="text-center mb-8">
+                <h1 className="text-2xl font-bold blue-text">Manage User</h1>
+            </div>
             <div className="mb-4 flex justify-between items-center">
                 <input
                     type="text"
@@ -149,9 +151,8 @@ const ManageUser = () => {
                                 </td>
                                 <td>
                                     <span
-                                        className={`badge ${
-                                            user.isVerified ? "badge-success" : "badge-warning"
-                                        }`}
+                                        className={`badge ${user.isVerified ? "badge-success" : "badge-warning"
+                                            }`}
                                     >
                                         {user.isVerified ? "Verified" : "Not Verified"}
                                     </span>

@@ -58,7 +58,7 @@ const Found = () => {
       <div className="container mx-auto py-8">
         <div className="text-center mb-8">
           <Title text={"Found"} />
-          <p className="text-lg text-gray-600 mt-2">
+          <p className="mx-2 text-sm md:text-base lg:text-lg text-gray-600 mt-2">
             Browse the list of found persons or search for specific individuals.
           </p>
           <div className="flex justify-end mr-4">

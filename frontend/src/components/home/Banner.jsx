@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Banner = () => {
   return (
     <div className="relative">
-      <img className="w-full h-[100%] md:h-[100%] lg:h-screen" src={bannerImg} alt="Banner" />
+      <img className="w-full h-[450px] md:h-[100%] lg:h-screen" src={bannerImg} alt="Banner" />
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
         <img src={logo_r} alt="Logo" className="mb-4 w-10 md:w-20 lg:w-40" />
         <h1 className="text-xl md:text-2xl lg:text-4xl font-bold">Help Us Bring Them Home</h1>

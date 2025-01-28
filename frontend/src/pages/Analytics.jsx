@@ -31,9 +31,9 @@ const Analytics = () => {
                     (item) => item.age < 18 || item.seriousIllnessOrDisabled
                 ).length;
 
-                
+
                 const fHighPriority = foundData.filter(
-                    (item) => item.age < 18 
+                    (item) => item.age < 18
                 ).length;
 
                 const highPriorityMissing = mHighPriority + fHighPriority;
@@ -96,56 +96,59 @@ const Analytics = () => {
     } = analyticsData;
 
     return (
-        <div className="container mx-auto py-8 min-h-screen">
-                <Title text={"Analytics"}/>
+        <div className="mx-5">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 my-10">
-                {/* Total Cases */}
-                <div className="bg-blue-100 p-6 rounded shadow">
-                    <h2 className="text-xl font-semibold">Total Missing Cases</h2>
-                    <p className="text-3xl">{totalMissing}</p>
-                </div>
-                <div className="bg-green-100 p-6 rounded shadow">
-                    <h2 className="text-xl font-semibold">Total Found Cases</h2>
-                    <p className="text-3xl">{totalFound}</p>
-                </div>
+            <div className="container mx-auto py-8 min-h-screen">
+                <Title text={"Analytics"} />
 
-                {/* Found Breakdown */}
-                <div className="bg-purple-100 p-6 rounded shadow">
-                    <h2 className="text-xl font-semibold">Found Alive</h2>
-                    <p className="text-3xl">{foundAlive}</p>
-                </div>
-                <div className="bg-red-100 p-6 rounded shadow">
-                    <h2 className="text-xl font-semibold">Found Dead</h2>
-                    <p className="text-3xl">{foundDead}</p>
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 my-10">
+                    {/* Total Cases */}
+                    <div className="bg-blue-100 p-6 rounded shadow">
+                        <h2 className="text-xl font-semibold">Total Missing Cases</h2>
+                        <p className="text-3xl">{totalMissing}</p>
+                    </div>
+                    <div className="bg-green-100 p-6 rounded shadow">
+                        <h2 className="text-xl font-semibold">Total Found Cases</h2>
+                        <p className="text-3xl">{totalFound}</p>
+                    </div>
 
-                {/* High Priority */}
-                <div className="bg-yellow-100 p-6 rounded shadow">
-                    <h2 className="text-xl font-semibold">High Priority Cases</h2>
-                    <p className="text-3xl">{highPriorityMissing}</p>
-                </div>
+                    {/* Found Breakdown */}
+                    <div className="bg-purple-100 p-6 rounded shadow">
+                        <h2 className="text-xl font-semibold">Found Alive</h2>
+                        <p className="text-3xl">{foundAlive}</p>
+                    </div>
+                    <div className="bg-red-100 p-6 rounded shadow">
+                        <h2 className="text-xl font-semibold">Found Dead</h2>
+                        <p className="text-3xl">{foundDead}</p>
+                    </div>
 
-                {/* Gender Breakdown */}
-                <div className="bg-gray-100 p-6 rounded shadow">
-                    <h2 className="text-xl font-semibold">Gender Breakdown</h2>
-                    <ul>
-                        <li>Male: {Male}</li>
-                        <li>Female: {Female}</li>
-                        <li>Other: {Other}</li>
-                    </ul>
-                </div>
+                    {/* High Priority */}
+                    <div className="bg-yellow-100 p-6 rounded shadow">
+                        <h2 className="text-xl font-semibold">High Priority Cases</h2>
+                        <p className="text-3xl">{highPriorityMissing}</p>
+                    </div>
 
-                {/* Case Types */}
-                <div className="bg-teal-100 p-6 rounded shadow">
-                    <h2 className="text-xl font-semibold">Case Types</h2>
-                    <ul>
-                        {Object.entries(caseTypes).map(([type, count]) => (
-                            <li key={type}>
-                                {type}: {count}
-                            </li>
-                        ))}
-                    </ul>
+                    {/* Gender Breakdown */}
+                    <div className="bg-gray-100 p-6 rounded shadow">
+                        <h2 className="text-xl font-semibold">Gender Breakdown</h2>
+                        <ul>
+                            <li>Male: {Male}</li>
+                            <li>Female: {Female}</li>
+                            <li>Other: {Other}</li>
+                        </ul>
+                    </div>
+
+                    {/* Case Types */}
+                    <div className="bg-teal-100 p-6 rounded shadow">
+                        <h2 className="text-xl font-semibold">Case Types</h2>
+                        <ul>
+                            {Object.entries(caseTypes).map(([type, count]) => (
+                                <li key={type}>
+                                    {type}: {count}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

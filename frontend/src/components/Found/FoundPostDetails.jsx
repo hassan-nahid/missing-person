@@ -86,16 +86,28 @@ const FoundPostDetails = () => {
             <h3 className="text-xl font-semibold text-gray-700 mb-4">Post Information</h3>
             <div className="text-gray-600 space-y-2">
               <p>
-                <span className="font-semibold">Name:</span> {post.name}
+                <span className="font-semibold">Name:</span> {post.name || "Not available"}
               </p>
               <p>
-                <span className="font-semibold">Found At:</span> {post.foundAt}
+                <span className="font-semibold">Age:</span> {post.age || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Found At:</span> {post.foundAt || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Clothes:</span> {post.clothes || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Skin Color:</span> {post.skinColor || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Height:</span> {post.height || "Not available"}
               </p>
               <p>
                 <span className="font-semibold">Date:</span> {new Date(post.createdAt).toLocaleDateString()}
               </p>
               <p>
-                <span className="font-semibold">Description:</span> {post.description}
+                <span className="font-semibold">Description:</span> {post.description || "Not available"}
               </p>
             </div>
           </div>

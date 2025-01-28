@@ -80,17 +80,41 @@ const MissingPostDetails = () => {
 
         {/* Post and User Information Section */}
         <div className="p-6">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-6">Missing Person Details</h2>
+          <h2 className="text-2xl text-center font-semibold text-gray-800 mb-6">Missing Person Details</h2>
 
           {/* Missing Post Details */}
           <div className="mb-8">
             <h3 className="text-xl font-semibold text-gray-700 mb-4">Post Information</h3>
             <div className="text-gray-600 space-y-2">
               <p>
-                <span className="font-semibold">Name:</span> {post.name}
+                <span className="font-semibold">Name:</span> {post.name || "Not available"}
               </p>
               <p>
-                <span className="font-semibold">Last Seen:</span> {post.lastSeen}
+                <span className="font-semibold">Age:</span> {post.age || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Care of:</span> {post.careOf || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Last Seen:</span> {post.lastSeen || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Clothes:</span> {post.clothes || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Skin Color:</span> {post.skinColor || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Height:</span> {post.height || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Education:</span> {post.education || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Serious Illness Or Disabled:</span> {post.seriousIllnessOrDisabled || "Not available"}
+              </p>
+              <p>
+                <span className="font-semibold">Description:</span> {post.description || "Not available"}
               </p>
               <p>
                 <span className="font-semibold">Date:</span> {new Date(post.createdAt).toLocaleDateString()}

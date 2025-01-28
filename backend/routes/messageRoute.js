@@ -1,6 +1,7 @@
 import express from 'express';
-import { createMessage, getMessagesByEmail } from '../controllers/messageController.js';
+import { createMessage, getAdminMessage, getMessagesByEmail } from '../controllers/messageController.js';
 import { verifyJWT } from '../middleware/Auth.js';
+import { verifyAdmin } from '../middleware/AdminVerify.js';
 
 const router = express.Router();
 
@@ -9,5 +10,6 @@ router.post('/', verifyJWT ,createMessage);
 
 // Route to get messages by email
 router.get('/:email',verifyJWT ,getMessagesByEmail);
+router.get('/:email',verifyAdmin ,getAdminMessage);
 
 export default router;

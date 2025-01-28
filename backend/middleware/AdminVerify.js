@@ -15,11 +15,11 @@ export const verifyAdmin = (req, res, next) => {
             return res.status(403).json({ message: "Access denied. Admins only." });
         }
 
-        // Optional: Match the admin email (decoded email) with a provided email in the request
-        const { email } = req.body; // Assuming email is sent in the request body
-        if (email && decoded.email !== email) {
-            return res.status(403).json({ message: "Email mismatch. Unauthorized access." });
-        }
+        // // Optional: Match the admin email (decoded email) with a provided email in the request
+        // const { email } = req.body; // Assuming email is sent in the request body
+        // if (email && decoded.email !== email) {
+        //     return res.status(403).json({ message: "Email mismatch. Unauthorized access." });
+        // }
 
         // Attach admin info to the request object
         req.admin = decoded;

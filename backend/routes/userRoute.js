@@ -1,7 +1,8 @@
 // userRoutes.js
 import express from "express";
-import { completeProfile, deleteUser, getUserByEmail, registerOrLoginWithGoogle, updateUser } from "../controllers/userController.js";
+import { completeProfile, deleteUserById, getAllUsers, getUserByEmail, getUserById, registerOrLoginWithGoogle, verifyUserById } from "../controllers/userController.js";
 import { verifyJWT } from "../middleware/Auth.js";
+import { verifyAdmin } from "../middleware/AdminVerify.js";
 
 const router = express.Router();
 
@@ -14,10 +15,21 @@ router.post("/user", registerOrLoginWithGoogle);
 
 // Route for completing profile (protected route)
 router.put("/complete-profile",verifyJWT ,completeProfile);
-// Update an existing user
-// router.put("/:id", updateUser);
 
-// // Delete a user
-// router.delete("/:id", deleteUser);
+;
+
+// get all user
+router.get('/users', verifyAdmin ,getAllUsers);
+
+// get user by id
+router.get('/singleDetails/:id',verifyAdmin,getUserById);
+
+// Delete user by ID
+router.delete('/deleteUser/:id', verifyAdmin, deleteUserById);
+
+// verify user
+router.patch("/verify/:id", verifyUserById);
+
+
 
 export default router;

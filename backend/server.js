@@ -9,7 +9,7 @@ import foundRouter from "./routes/foundRoute.js";
 import adminRouter from "./routes/adminRoute.js";
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 connectDB();
 
 // Middleware

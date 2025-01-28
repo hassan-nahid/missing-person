@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import FoundModal from "./FoundModal";
 import { useUser } from "../../context/userContext";
+import noPhoto from "../../assets/img/no_photo.png";
 
 const FoundPostDetails = () => {
   const { id } = useParams(); // Get the post ID from the URL
@@ -70,7 +71,7 @@ const FoundPostDetails = () => {
         {/* Full Width Image Section */}
         <div className="relative w-full md:w-[75%] lg:w-[60%] mx-auto">
           <img
-            src={post.photo || "default-image-url"} // Default image if no photo available
+            src={post.photo || noPhoto} // Default image if no photo available
             alt="Found Person"
             className="w-full h-full object-cover rounded-t-lg shadow-lg" // Full width, height, and shadow for a cool effect
           />
@@ -130,11 +131,12 @@ const FoundPostDetails = () => {
             >
               Contact Owner
             </button>
-            <button
+            <Link 
+              to={`/found_admin_report/${post._id}`}
               disabled={btnDisabled}
               className="btn bg-red-400 text-white px-6 py-2 rounded-lg hover:bg-red-400 transition duration-300 w-full sm:w-auto">
               Report Issue
-            </button>
+            </Link>
           </div>
           <FoundModal postDetails={postDetails} />
         </div>

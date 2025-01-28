@@ -22,6 +22,7 @@ import ContactUs from "../pages/ContactUs";
 import FoundPostUpdateStatus from "../components/Profile/FoundPostUpdateStatus";
 import MissingPostUpdateStatus from "../components/Profile/MissingPostUpdateStatus";
 import Analytics from "../pages/Analytics";
+import MissingAdminReport from "../components/Missing/MissingAdminReport";
 
 export const router = createBrowserRouter([
   {
@@ -84,6 +85,14 @@ export const router = createBrowserRouter([
       {
         path: "/missing_post_update_status/:id",
         element: <PrivateRoute><PrivateProfileComplete><MissingPostUpdateStatus /></PrivateProfileComplete></PrivateRoute>,
+      },
+      {
+        path: "/missing_admin_report/:id",
+        element: <PrivateRoute><PrivateProfileComplete><MissingAdminReport/></PrivateProfileComplete></PrivateRoute>,
+      },
+      {
+        path: "/found_admin_report/:id",
+        element: <PrivateRoute><PrivateProfileComplete><MissingAdminReport/></PrivateProfileComplete></PrivateRoute>,
       },
       {
         path: "/login",

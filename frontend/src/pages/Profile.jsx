@@ -20,7 +20,7 @@ const Profile = () => {
     try {
       if (userData?.email) {
         const token = localStorage.getItem("token");
-  
+
         // Fetch Found Posts
         const foundResponse = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/found/found/email/${userData.email}`,
@@ -30,12 +30,12 @@ const Profile = () => {
             },
           }
         );
-  
+
         if (foundResponse.data.data.length === 0) {
           console.log("No found posts available.");
         }
         setFoundPosts(foundResponse.data.data || []);
-  
+
         // Fetch Missing Posts
         const missingResponse = await axios.get(
           `${import.meta.env.VITE_API_URL}/api/missing/missing/email/${userData.email}`,
@@ -45,7 +45,7 @@ const Profile = () => {
             },
           }
         );
-  
+
         if (missingResponse.data.data.length === 0) {
           console.log("No missing posts available.");
         }
@@ -55,11 +55,11 @@ const Profile = () => {
       console.error("Error fetching posts:", error.message);
     }
   };
-  
+
 
   useEffect(() => {
     fetchPosts();
-  }, [ userData]);
+  }, [userData]);
 
 
   const handleDelete = async (postId, status) => {
@@ -73,27 +73,27 @@ const Profile = () => {
         cancelButtonColor: "#d33",
         confirmButtonText: "Yes, delete it!",
       });
-  
+
       if (result.isConfirmed) {
         // API Call for Deletion
         const endpoint =
           status === "Found"
             ? `${import.meta.env.VITE_API_URL}/api/found/found/delete/${postId}`
             : `${import.meta.env.VITE_API_URL}/api/missing/missing/delete/${postId}`;
-  
+
         await axios.delete(endpoint, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
-  
+
         // Update state after deletion
         if (status === "Found") {
           setFoundPosts((prev) => prev.filter((post) => post._id !== postId));
         } else {
           setMissingPosts((prev) => prev.filter((post) => post._id !== postId));
         }
-  
+
         // Show success alert
         Swal.fire({
           title: "Deleted!",
@@ -110,7 +110,7 @@ const Profile = () => {
       });
     }
   };
-  
+
   return (
     <div className="min-h-screen bg-white py-10">
       <div className="container mx-auto px-4">
@@ -172,7 +172,7 @@ const Profile = () => {
         </div>
 
         {/* Posts Section */}
-       
+
         <div className="mt-12">
           <h3 className="text-2xl font-bold text-gray-800 mb-8 text-center">
             My Posts
@@ -200,9 +200,9 @@ const Profile = () => {
               <p className="text-center text-gray-500">No posts available.</p>
             )}
           </div>
-          </div>
         </div>
       </div>
+    </div>
 
   );
 };

@@ -57,3 +57,38 @@ export const getMessagesByEmail = async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal server error.' });
   }
 };
+
+
+export const getAdminMessage = async (req, res) => {
+  try {
+    const { email } = req.params; // Extract email from query params
+
+
+    if (!email) {
+      return res.status(400).json({ success: false, error: 'Email query parameter is required.' });
+    }
+
+    // Find messages where the email is either sender or receiver
+    const messages = await Message.find({
+      $or: [{ from: email }, { to: email }],
+    }).sort({ createdAt: -1 });
+
+    // Enrich messages with missing or found post's name based on postId and postType
+    const enrichedMessages = await Promise.all(
+      messages.map(async (message) => {
+        const postModel = message.postType === 'missing' ? MissingPost : FoundPost; // Select model based on postType
+        const post = await postModel.findById(message.postId); // Query the appropriate collection
+
+        return {
+          ...message.toObject(),
+          missingPersonName: post ? post.name : null, // Assuming the Post model has a `name` field
+        };
+      })
+    );
+
+    res.status(200).json({ success: true, data: enrichedMessages });
+  } catch (error) {
+    console.error('Error retrieving messages by email:', error);
+    res.status(500).json({ success: false, error: 'Internal server error.' });
+  }
+};

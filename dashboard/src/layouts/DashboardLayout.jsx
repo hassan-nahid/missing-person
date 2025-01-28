@@ -46,7 +46,7 @@ const DashboardLayout = () => {
                         <li><Link to={"/verify_user"}><FaUserCheck/>Verify User</Link></li>
                         <li><Link to={"/missing_post_manage"}><GiStabbedNote/>Missing Post Manage</Link></li>
                         <li><Link to={"/found_post_manage"}><GiNotebook/>Found Post Manage</Link></li>
-                        <li><Link to={"/message"}><MdMessage/>Message</Link></li>
+                        <li><Link to={"/admin_message"}><MdMessage/>Message</Link></li>
                         <li><Link to={"/add_admin"}><MdAdminPanelSettings/>Add Admin</Link></li>
                     </div>
                     <div className="flex justify-center gap-2 items-center">

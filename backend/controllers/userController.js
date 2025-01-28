@@ -1,29 +1,28 @@
-// userController.js
 
 import User from "../models/userModel.js";
 // Create a new user
 import jwt from "jsonwebtoken";
 
-const SECRET_KEY = process.env.JWT_SECRET; 
+const SECRET_KEY = process.env.JWT_SECRET;
 
 
 // Get a user by email
 export const getUserByEmail = async (req, res) => {
     try {
-      // Find user by email and exclude identification data
-      const user = await User.findOne({ email: req.params.email })
-        .select("-identificationType -identificationNumber -documentPhoto"); // Exclude these fields
-  
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-  
-      res.status(200).json(user); // Return the user data
+        // Find user by email and exclude identification data
+        const user = await User.findOne({ email: req.params.email })
+            .select("-identificationType -identificationNumber -documentPhoto"); // Exclude these fields
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user); // Return the user data
     } catch (error) {
-      res.status(500).json({ message: "Server error", error: error.message });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
-  };
-  
+};
+
 
 // Create a new user or login existing user
 export const registerOrLoginWithGoogle = async (req, res) => {
@@ -92,37 +91,77 @@ export const completeProfile = async (req, res) => {
 };
 
 
-// Update an existing user
-export const updateUser = async (req, res) => {
+// Get all users
+export const getAllUsers = async (req, res) => {
     try {
-        const { id } = req.params;
-        const updates = req.body;
+        // Fetch all users and exclude sensitive fields
+        const users = await User.find()
+            .select("-identificationType -identificationNumber -documentPhoto");
 
-        const user = await User.findByIdAndUpdate(id, updates, { new: true });
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+// get user by id
+
+export const getUserById = async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+        const user = await User.findById(id)
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json(user);
+        res.status(200).json(user); // Return the user data
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };
 
-// Delete a user
-export const deleteUser = async (req, res) => {
+
+// Delete user by ID
+export const deleteUserById = async (req, res) => {
     try {
         const { id } = req.params;
 
+        // Find user by ID and delete
         const user = await User.findByIdAndDelete(id);
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json({ message: "User deleted successfully" });
+        res.status(200).json({ message: "User deleted successfully", user });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+};
+
+// verify user 
+
+// Verify user by ID
+export const verifyUserById = async (req, res) => {
+    const { id } = req.params; // Get user ID from request params
+
+    try {
+        // Find the user by ID and update the isVerified field
+        const user = await User.findByIdAndUpdate(
+            id,
+            { isVerified: true },
+            { new: true } // Return the updated user
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "User verified successfully", user });
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 };

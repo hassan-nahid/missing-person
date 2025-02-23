@@ -66,7 +66,7 @@ const FoundPostUpdateStatus = () => {
   };
   
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen py-10">
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6">
         <HomeTitle text={"Update Found Status"} />
 

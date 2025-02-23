@@ -96,7 +96,7 @@ const Analytics = () => {
     } = analyticsData;
 
     return (
-        <div className="mx-5">
+        <div className="mx-5 min-h-screen">
 
             <div className="container mx-auto py-8 min-h-screen">
                 <Title text={"Analytics"} />
